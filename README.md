@@ -68,7 +68,7 @@ md = code_aggregate("contaix")
 md = code_aggregate("/path/to/project")
 
 # A GitHub repo (downloaded via hubcap)
-md = code_aggregate("https://github.com/thorwhalen/contaix")
+md = code_aggregate("https://github.com/addaix/contaix")
 
 # Save instead of return
 code_aggregate("contaix", egress="/tmp/contaix_code.md")
