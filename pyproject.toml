@@ -49,10 +49,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://thorwhalen.github.io/contaix/"
-Repository = "https://github.com/thorwhalen/contaix"
-Issues = "https://github.com/thorwhalen/contaix/issues"
-Changelog = "https://github.com/thorwhalen/contaix/blob/main/CHANGELOG.md"
+Homepage = "https://addaix.github.io/contaix/"
+Repository = "https://github.com/addaix/contaix"
+Issues = "https://github.com/addaix/contaix/issues"
+Changelog = "https://github.com/addaix/contaix/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 pdf = [
