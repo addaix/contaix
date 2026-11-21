@@ -1,4 +1,4 @@
-> built 2026-10-20 17:27 UTC from 4d671b2 (main) · contaix 0.0.27. Details: build_info.json
+> built 2026-11-21 15:23 UTC from 76984a9 (main) · contaix 0.0.28. Details: build_info.json
 
 # index.html.md
 
@@ -74,7 +74,7 @@ md = code_aggregate("contaix")
 md = code_aggregate("/path/to/project")
 
 # A GitHub repo (downloaded via hubcap)
-md = code_aggregate("https://github.com/thorwhalen/contaix")
+md = code_aggregate("https://github.com/addaix/contaix")
 
 # Save instead of return
 code_aggregate("contaix", egress="/tmp/contaix_code.md")
@@ -1208,31 +1208,29 @@ Convert a URL to a filesystem-safe cache key.
 
 # About this build
 
-This documentation was built on **2026-10-20 17:27 UTC** from commit <a href="https://github.com/thorwhalen/contaix/commit/4d671b2e12974432589aa64f773d4bb90d13777b"><code>4d671b2</code></a> on branch <code>main</code>, for **contaix 0.0.27** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-21 15:23 UTC** from commit <a href="https://github.com/addaix/contaix/commit/76984a9702b42af33008e11dd1cedfd7e5f19b23"><code>76984a9</code></a> on branch <code>main</code>, for **contaix 0.0.28** (from <code>pyproject.toml</code>).
 
-#### WARNING
-The documentation and the package may be misaligned:
-
-- The documented version (0.0.27) is behind the latest release on PyPI (0.0.28): `pip install contaix` gives newer code than these docs describe.
+#### NOTE
+Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
 
 ## Source
 
-|                     |                                                                                                                                                           |
-|---------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/thorwhalen/contaix/commit/4d671b2e12974432589aa64f773d4bb90d13777b"><code>4d671b2e12974432589aa64f773d4bb90d13777b</code></a> |
-| Branch              | <code>main</code>                                                                                                                                         |
-| Tags at this commit | none                                                                                                                                                      |
-| Working tree        | clean                                                                                                                                                     |
-| Remote              | <code>https://github.com/thorwhalen/contaix</code>                                                                                                        |
+|                     |                                                                                                                                                       |
+|---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Commit              | <a href="https://github.com/addaix/contaix/commit/76984a9702b42af33008e11dd1cedfd7e5f19b23"><code>76984a9702b42af33008e11dd1cedfd7e5f19b23</code></a> |
+| Branch              | <code>main</code>                                                                                                                                     |
+| Tags at this commit | none                                                                                                                                                  |
+| Working tree        | clean                                                                                                                                                 |
+| Remote              | <code>https://github.com/addaix/contaix</code>                                                                                                        |
 
 ## Continuous integration
 
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
-| Repository   | <code>thorwhalen/contaix</code>                                                            |
-| Run          | <a href="https://github.com/thorwhalen/contaix/actions/runs/39465927232">39465927232</a>   |
+| Repository   | <code>addaix/contaix</code>                                                                |
+| Run          | <a href="https://github.com/addaix/contaix/actions/runs/44918793969">44918793969</a>       |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>4d671b2e12974432589aa64f773d4bb90d13777b</code> (in the history of the built commit) |
+| Event commit | <code>76984a9702b42af33008e11dd1cedfd7e5f19b23</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -1241,7 +1239,7 @@ The documentation and the package may be misaligned:
 | epythet  | 0.2.22  |
 | Sphinx   | 9.1.1   |
 | docutils | 0.22.4  |
-| Python   | 3.12.15 |
+| Python   | 3.12.16 |
 
 ## Configuration as resolved
 
@@ -1257,13 +1255,13 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/contaix/0.0.28/">0.0.28</a>, newer than the documented version (0.0.27).
+Latest release: <a href="https://pypi.org/project/contaix/0.0.28/">0.0.28</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
-git clone https://github.com/thorwhalen/contaix && cd contaix
-git checkout 4d671b2e12974432589aa64f773d4bb90d13777b
+git clone https://github.com/addaix/contaix && cd contaix
+git checkout 76984a9702b42af33008e11dd1cedfd7e5f19b23
 pip install "epythet==0.2.22"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
@@ -1290,45 +1288,45 @@ Skills are folders holding a `SKILL.md` (the [Agent Skills](https://agentskills.
 Acquire a tool’s documentation as a single agent-ready markdown bundle, plus any machine-readable specs (OpenAPI, MCP, AsyncAPI, GraphQL). Use whenever the user provides one or more URLs (or a tool/product name) and wants the docs / manual / API reference as a context bundle for an AI agent. Triggers on “acquire the docs”, “get me the docs”, “bundle this manual”, “make a context for tool X”, “download the API reference”, “give me everything as one md”, “fetch the OpenAPI spec”, “grab the MCP spec”, or any URL pointing at a documentation / developer / API / manual site. Tries cheapest paths first — GitHub source, llms.txt, raw-markdown variants of doc URLs — and only falls back to HTML scraping (via contaix_docs_to_markdown / contaix_web_aggregate) when nothing better is available.
 
 ```bash
-gh skill install thorwhalen/contaix contaix-acquire-docs --agent claude-code
+gh skill install addaix/contaix contaix-acquire-docs --agent claude-code
 ```
 
-Source: [`skills/contaix-acquire-docs`](https://github.com/thorwhalen/contaix/tree/HEAD/skills/contaix-acquire-docs).
+Source: [`skills/contaix-acquire-docs`](https://github.com/addaix/contaix/tree/HEAD/skills/contaix-acquire-docs).
 
 ### `contaix_docs_to_markdown`
 
 Convert a documentation website into a single, clean markdown file. Use when the user provides a documentation URL and wants it as markdown, or says “get me the docs”, “download documentation”, “make a markdown of this site”, “aggregate these docs”, or gives a URL to a docs site. Also use for converting API reference sites, developer guides, product documentation, or knowledge bases.
 
 ```bash
-gh skill install thorwhalen/contaix contaix_docs_to_markdown --agent claude-code
+gh skill install addaix/contaix contaix_docs_to_markdown --agent claude-code
 ```
 
-Source: [`skills/contaix_docs_to_markdown`](https://github.com/thorwhalen/contaix/tree/HEAD/skills/contaix_docs_to_markdown).
+Source: [`skills/contaix_docs_to_markdown`](https://github.com/addaix/contaix/tree/HEAD/skills/contaix_docs_to_markdown).
 
 ### `contaix_web_aggregate`
 
 Aggregate web content from multiple pages into structured markdown. Use when the user wants to aggregate a non-documentation website (company info, product pages), when contaix_docs_to_markdown doesn’t work for a specific site, when the user wants manual control over which pages to include, or when dealing with JavaScript-rendered sites that need WebFetch.
 
 ```bash
-gh skill install thorwhalen/contaix contaix_web_aggregate --agent claude-code
+gh skill install addaix/contaix contaix_web_aggregate --agent claude-code
 ```
 
-Source: [`skills/contaix_web_aggregate`](https://github.com/thorwhalen/contaix/tree/HEAD/skills/contaix_web_aggregate).
+Source: [`skills/contaix_web_aggregate`](https://github.com/addaix/contaix/tree/HEAD/skills/contaix_web_aggregate).
 
 ## Instruction files
 
 Files agents read before working in this repository.
 
-- [`.claude/CLAUDE.md`](https://github.com/thorwhalen/contaix/tree/HEAD/.claude/CLAUDE.md): read by Claude Code
+- [`.claude/CLAUDE.md`](https://github.com/addaix/contaix/tree/HEAD/.claude/CLAUDE.md): read by Claude Code
 
 ## Machine-readable documentation
 
 This site publishes the same documentation in forms that fit an agent’s context window:
 
-- [`llms.txt`](https://thorwhalen.github.io/contaix/llms.txt): an index of every page with a one-line description ([llms.txt](https://llmstxt.org) format)
-- [`contaix.md`](https://thorwhalen.github.io/contaix/contaix.md): the whole documentation as one Markdown file
+- [`llms.txt`](https://addaix.github.io/contaix/llms.txt): an index of every page with a one-line description ([llms.txt](https://llmstxt.org) format)
+- [`contaix.md`](https://addaix.github.io/contaix/contaix.md): the whole documentation as one Markdown file
 - `<page>.html.md`: a rendered Markdown twin of every page, advertised from each page’s `<head>` with `<link rel="alternate" type="text/markdown">`
-- [`objects.inv`](https://thorwhalen.github.io/contaix/objects.inv): the Sphinx inventory: a symbol-to-URL index (`sphobjinv convert plain objects.inv -`)
+- [`objects.inv`](https://addaix.github.io/contaix/objects.inv): the Sphinx inventory: a symbol-to-URL index (`sphobjinv convert plain objects.inv -`)
 
 
 # api.html.md

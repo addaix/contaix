@@ -267,43 +267,43 @@ machine-readable copies of this documentation.</p>
 <section id="contaix-acquire-docs">
 <h3><code class="docutils literal notranslate"><span class="pre">contaix-acquire-docs</span></code><a class="headerlink" href="#contaix-acquire-docs" title="Link to this heading">¶</a></h3>
 <p>Acquire a tool’s documentation as a single agent-ready markdown bundle, plus any machine-readable specs (OpenAPI, MCP, AsyncAPI, GraphQL). Use whenever the user provides one or more URLs (or a tool/product name) and wants the docs / manual / API reference as a context bundle for an AI agent. Triggers on “acquire the docs”, “get me the docs”, “bundle this manual”, “make a context for tool X”, “download the API reference”, “give me everything as one md”, “fetch the OpenAPI spec”, “grab the MCP spec”, or any URL pointing at a documentation / developer / API / manual site. Tries cheapest paths first — GitHub source, llms.txt, raw-markdown variants of doc URLs — and only falls back to HTML scraping (via contaix_docs_to_markdown / contaix_web_aggregate) when nothing better is available.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gh<span class="w"> </span>skill<span class="w"> </span>install<span class="w"> </span>thorwhalen/contaix<span class="w"> </span>contaix-acquire-docs<span class="w"> </span>--agent<span class="w"> </span>claude-code
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gh<span class="w"> </span>skill<span class="w"> </span>install<span class="w"> </span>addaix/contaix<span class="w"> </span>contaix-acquire-docs<span class="w"> </span>--agent<span class="w"> </span>claude-code
 </pre></div>
 </div>
-<p>Source: <a class="reference external" href="https://github.com/thorwhalen/contaix/tree/HEAD/skills/contaix-acquire-docs"><code class="docutils literal notranslate"><span class="pre">skills/contaix-acquire-docs</span></code></a>.</p>
+<p>Source: <a class="reference external" href="https://github.com/addaix/contaix/tree/HEAD/skills/contaix-acquire-docs"><code class="docutils literal notranslate"><span class="pre">skills/contaix-acquire-docs</span></code></a>.</p>
 </section>
 <section id="contaix-docs-to-markdown">
-<h3><code class="docutils literal notranslate"><span class="pre">contaix_docs_to_markdown</span></code><a class="headerlink" href="#contaix-docs-to-markdown" title="Link to this heading">¶</a></h3>
+<span id="contaix_docs_to_markdown"></span><h3><code class="docutils literal notranslate"><span class="pre">contaix_docs_to_markdown</span></code><a class="headerlink" href="#contaix-docs-to-markdown" title="Link to this heading">¶</a></h3>
 <p>Convert a documentation website into a single, clean markdown file. Use when the user provides a documentation URL and wants it as markdown, or says “get me the docs”, “download documentation”, “make a markdown of this site”, “aggregate these docs”, or gives a URL to a docs site. Also use for converting API reference sites, developer guides, product documentation, or knowledge bases.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gh<span class="w"> </span>skill<span class="w"> </span>install<span class="w"> </span>thorwhalen/contaix<span class="w"> </span>contaix_docs_to_markdown<span class="w"> </span>--agent<span class="w"> </span>claude-code
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gh<span class="w"> </span>skill<span class="w"> </span>install<span class="w"> </span>addaix/contaix<span class="w"> </span>contaix_docs_to_markdown<span class="w"> </span>--agent<span class="w"> </span>claude-code
 </pre></div>
 </div>
-<p>Source: <a class="reference external" href="https://github.com/thorwhalen/contaix/tree/HEAD/skills/contaix_docs_to_markdown"><code class="docutils literal notranslate"><span class="pre">skills/contaix_docs_to_markdown</span></code></a>.</p>
+<p>Source: <a class="reference external" href="https://github.com/addaix/contaix/tree/HEAD/skills/contaix_docs_to_markdown"><code class="docutils literal notranslate"><span class="pre">skills/contaix_docs_to_markdown</span></code></a>.</p>
 </section>
 <section id="contaix-web-aggregate">
-<h3><code class="docutils literal notranslate"><span class="pre">contaix_web_aggregate</span></code><a class="headerlink" href="#contaix-web-aggregate" title="Link to this heading">¶</a></h3>
+<span id="contaix_web_aggregate"></span><h3><code class="docutils literal notranslate"><span class="pre">contaix_web_aggregate</span></code><a class="headerlink" href="#contaix-web-aggregate" title="Link to this heading">¶</a></h3>
 <p>Aggregate web content from multiple pages into structured markdown. Use when the user wants to aggregate a non-documentation website (company info, product pages), when contaix_docs_to_markdown doesn’t work for a specific site, when the user wants manual control over which pages to include, or when dealing with JavaScript-rendered sites that need WebFetch.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gh<span class="w"> </span>skill<span class="w"> </span>install<span class="w"> </span>thorwhalen/contaix<span class="w"> </span>contaix_web_aggregate<span class="w"> </span>--agent<span class="w"> </span>claude-code
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gh<span class="w"> </span>skill<span class="w"> </span>install<span class="w"> </span>addaix/contaix<span class="w"> </span>contaix_web_aggregate<span class="w"> </span>--agent<span class="w"> </span>claude-code
 </pre></div>
 </div>
-<p>Source: <a class="reference external" href="https://github.com/thorwhalen/contaix/tree/HEAD/skills/contaix_web_aggregate"><code class="docutils literal notranslate"><span class="pre">skills/contaix_web_aggregate</span></code></a>.</p>
+<p>Source: <a class="reference external" href="https://github.com/addaix/contaix/tree/HEAD/skills/contaix_web_aggregate"><code class="docutils literal notranslate"><span class="pre">skills/contaix_web_aggregate</span></code></a>.</p>
 </section>
 </section>
 <section id="instruction-files">
 <h2>Instruction files<a class="headerlink" href="#instruction-files" title="Link to this heading">¶</a></h2>
 <p>Files agents read before working in this repository.</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/thorwhalen/contaix/tree/HEAD/.claude/CLAUDE.md"><code class="docutils literal notranslate"><span class="pre">.claude/CLAUDE.md</span></code></a>: read by Claude Code</p></li>
+<li><p><a class="reference external" href="https://github.com/addaix/contaix/tree/HEAD/.claude/CLAUDE.md"><code class="docutils literal notranslate"><span class="pre">.claude/CLAUDE.md</span></code></a>: read by Claude Code</p></li>
 </ul>
 </section>
 <section id="machine-readable-documentation">
 <h2>Machine-readable documentation<a class="headerlink" href="#machine-readable-documentation" title="Link to this heading">¶</a></h2>
 <p>This site publishes the same documentation in forms that fit an agent’s context window:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://thorwhalen.github.io/contaix/llms.txt"><code class="docutils literal notranslate"><span class="pre">llms.txt</span></code></a>: an index of every page with a one-line description (<a class="reference external" href="https://llmstxt.org">llms.txt</a> format)</p></li>
-<li><p><a class="reference external" href="https://thorwhalen.github.io/contaix/contaix.md"><code class="docutils literal notranslate"><span class="pre">contaix.md</span></code></a>: the whole documentation as one Markdown file</p></li>
+<li><p><a class="reference external" href="https://addaix.github.io/contaix/llms.txt"><code class="docutils literal notranslate"><span class="pre">llms.txt</span></code></a>: an index of every page with a one-line description (<a class="reference external" href="https://llmstxt.org">llms.txt</a> format)</p></li>
+<li><p><a class="reference external" href="https://addaix.github.io/contaix/contaix.md"><code class="docutils literal notranslate"><span class="pre">contaix.md</span></code></a>: the whole documentation as one Markdown file</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;page&gt;.html.md</span></code>: a rendered Markdown twin of every page, advertised from each page’s <code class="docutils literal notranslate"><span class="pre">&lt;head&gt;</span></code> with <code class="docutils literal notranslate"><span class="pre">&lt;link</span> <span class="pre">rel=&quot;alternate&quot;</span> <span class="pre">type=&quot;text/markdown&quot;&gt;</span></code></p></li>
-<li><p><a class="reference external" href="https://thorwhalen.github.io/contaix/objects.inv"><code class="docutils literal notranslate"><span class="pre">objects.inv</span></code></a>: the Sphinx inventory: a symbol-to-URL index (<code class="docutils literal notranslate"><span class="pre">sphobjinv</span> <span class="pre">convert</span> <span class="pre">plain</span> <span class="pre">objects.inv</span> <span class="pre">-</span></code>)</p></li>
+<li><p><a class="reference external" href="https://addaix.github.io/contaix/objects.inv"><code class="docutils literal notranslate"><span class="pre">objects.inv</span></code></a>: the Sphinx inventory: a symbol-to-URL index (<code class="docutils literal notranslate"><span class="pre">sphobjinv</span> <span class="pre">convert</span> <span class="pre">plain</span> <span class="pre">objects.inv</span> <span class="pre">-</span></code>)</p></li>
 </ul>
 </section>
 </section>
@@ -371,7 +371,7 @@ machine-readable copies of this documentation.</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=9463f84e"></script>
+</div><script src="_static/documentation_options.js?v=36140909"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
