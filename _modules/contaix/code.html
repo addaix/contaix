@@ -337,6 +337,8 @@
     <span class="n">keys_filt</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".py"</span><span class="p">),</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">keys_exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">respect_gitignore</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">skip_binary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Will resolve code_src to a Mapping whose values are the code strings</span>
@@ -353,6 +355,12 @@
 <span class="sd">            predicate identifying keys to *exclude* (e.g. vendored deps, build outputs).</span>
 <span class="sd">            Applied on top of (after) ``keys_filt``. Pass</span>
 <span class="sd">            ``DFLT_AGGREGATE_EXCLUDE_PATTERNS`` to skip the usual bloat.</span>
+<span class="sd">        respect_gitignore: For a folder inside a git work tree, keep only the files git</span>
+<span class="sd">            would track (``git ls-files --cached --others --exclude-standard``), so</span>
+<span class="sd">            ``.gitignore``d build outputs and vendored trees never enter. A no-op outside</span>
+<span class="sd">            a work tree or without git.</span>
+<span class="sd">        skip_binary: For a folder, drop files whose first bytes hold a NUL (images,</span>
+<span class="sd">            compiled files, archives).</span>
 
 <span class="sd">    """</span>
     <span class="k">if</span> <span class="n">keys_filt</span><span class="p">:</span>
@@ -396,10 +404,85 @@
         <span class="k">return</span> <span class="n">code_src</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">code_src_rootdir</span> <span class="o">=</span> <span class="n">resolve_code_source_dir_path</span><span class="p">(</span><span class="n">code_src</span><span class="p">)</span>
+        <span class="n">keys_filt</span> <span class="o">=</span> <span class="n">_folder_filter</span><span class="p">(</span>
+            <span class="n">code_src_rootdir</span><span class="p">,</span>
+            <span class="n">keys_filt</span><span class="p">,</span>
+            <span class="n">respect_gitignore</span><span class="o">=</span><span class="n">respect_gitignore</span><span class="p">,</span>
+            <span class="n">skip_binary</span><span class="o">=</span><span class="n">skip_binary</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="n">cached_keys</span><span class="p">(</span>
             <span class="n">filt_iter</span><span class="p">(</span><span class="n">TextFiles</span><span class="p">(</span><span class="n">code_src_rootdir</span><span class="p">),</span> <span class="n">filt</span><span class="o">=</span><span class="n">keys_filt</span><span class="p">),</span> <span class="n">keys_cache</span><span class="o">=</span><span class="nb">sorted</span>
         <span class="p">)</span></div>
 
+
+
+<div class="viewcode-block" id="git_tracked_files">
+<a class="viewcode-back" href="../../_autosummary/contaix.code.html#contaix.code.git_tracked_files">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">git_tracked_files</span><span class="p">(</span><span class="n">rootdir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">frozenset</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""The files under ``rootdir`` git would track, relative to it; None outside a work tree.</span>
+
+<span class="sd">    Untracked files count unless ``.gitignore`` (or ``.git/info/exclude``, or the global</span>
+<span class="sd">    excludes file) ignores them, which is what a reader of the repo would see.</span>
+
+<span class="sd">    &gt;&gt;&gt; git_tracked_files('/') is None or isinstance(git_tracked_files('/'), frozenset)</span>
+<span class="sd">    True</span>
+<span class="sd">    """</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">done</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">"git"</span><span class="p">,</span> <span class="s2">"-C"</span><span class="p">,</span> <span class="n">rootdir</span><span class="p">,</span> <span class="s2">"ls-files"</span><span class="p">,</span> <span class="s2">"-z"</span><span class="p">,</span> <span class="s2">"--cached"</span><span class="p">,</span> <span class="s2">"--others"</span><span class="p">,</span>
+             <span class="s2">"--exclude-standard"</span><span class="p">],</span>
+            <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">timeout</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">SubprocessError</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">done</span><span class="o">.</span><span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="nb">frozenset</span><span class="p">(</span>
+        <span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">done</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="s2">"surrogateescape"</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\0</span><span class="s2">"</span><span class="p">)</span> <span class="k">if</span> <span class="n">p</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="c1">#: How many leading bytes :func:`is_binary_file` reads.</span>
+<span class="n">BINARY_SNIFF_BYTES</span> <span class="o">=</span> <span class="mi">8000</span>
+
+
+<div class="viewcode-block" id="is_binary_file">
+<a class="viewcode-back" href="../../_autosummary/contaix.code.html#contaix.code.is_binary_file">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_binary_file</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""True when the first bytes of ``path`` hold a NUL (git's own heuristic).</span>
+
+<span class="sd">    &gt;&gt;&gt; import tempfile, os</span>
+<span class="sd">    &gt;&gt;&gt; with tempfile.NamedTemporaryFile(delete=False) as f:</span>
+<span class="sd">    ...     _ = f.write(bytes([0x89, 0x50, 0, 0]))</span>
+<span class="sd">    &gt;&gt;&gt; is_binary_file(f.name)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; os.unlink(f.name)</span>
+<span class="sd">    """</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">b</span><span class="s2">"</span><span class="se">\0</span><span class="s2">"</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">BINARY_SNIFF_BYTES</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_folder_filter</span><span class="p">(</span><span class="n">rootdir</span><span class="p">,</span> <span class="n">keys_filt</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">respect_gitignore</span><span class="p">,</span> <span class="n">skip_binary</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""``keys_filt``, narrowed to what git tracks and to text files, for a folder source."""</span>
+    <span class="n">tracked</span> <span class="o">=</span> <span class="n">git_tracked_files</span><span class="p">(</span><span class="n">rootdir</span><span class="p">)</span> <span class="k">if</span> <span class="n">respect_gitignore</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">filt</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">keys_filt</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="c1"># git prints '/' on every platform; a folder store's keys use os.sep</span>
+        <span class="k">if</span> <span class="n">tracked</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">key</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">,</span> <span class="s2">"/"</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tracked</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="n">skip_binary</span> <span class="ow">and</span> <span class="n">is_binary_file</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rootdir</span><span class="p">,</span> <span class="n">key</span><span class="p">)))</span>
+
+    <span class="k">return</span> <span class="n">filt</span>
 
 
 <span class="n">Filepath</span> <span class="o">=</span> <span class="nb">str</span>
@@ -680,16 +763,104 @@
     <span class="k">return</span> <span class="n">ReadmeFirstChainMap</span><span class="p">({</span><span class="s2">"README.md"</span><span class="p">:</span> <span class="n">readme_content</span><span class="p">},</span> <span class="n">code_store</span><span class="p">)</span>
 
 
+<span class="c1">#: Code-fence language by file extension (the name GitHub's renderer knows); anything</span>
+<span class="c1">#: else gets a bare fence.</span>
+<span class="n">FENCE_LANGUAGES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">".py"</span><span class="p">:</span> <span class="s2">"python"</span><span class="p">,</span> <span class="s2">".pyi"</span><span class="p">:</span> <span class="s2">"python"</span><span class="p">,</span> <span class="s2">".ipynb"</span><span class="p">:</span> <span class="s2">"json"</span><span class="p">,</span>
+    <span class="s2">".js"</span><span class="p">:</span> <span class="s2">"javascript"</span><span class="p">,</span> <span class="s2">".mjs"</span><span class="p">:</span> <span class="s2">"javascript"</span><span class="p">,</span> <span class="s2">".cjs"</span><span class="p">:</span> <span class="s2">"javascript"</span><span class="p">,</span> <span class="s2">".jsx"</span><span class="p">:</span> <span class="s2">"jsx"</span><span class="p">,</span>
+    <span class="s2">".ts"</span><span class="p">:</span> <span class="s2">"typescript"</span><span class="p">,</span> <span class="s2">".tsx"</span><span class="p">:</span> <span class="s2">"tsx"</span><span class="p">,</span> <span class="s2">".json"</span><span class="p">:</span> <span class="s2">"json"</span><span class="p">,</span>
+    <span class="s2">".md"</span><span class="p">:</span> <span class="s2">"markdown"</span><span class="p">,</span> <span class="s2">".rst"</span><span class="p">:</span> <span class="s2">"rst"</span><span class="p">,</span> <span class="s2">".txt"</span><span class="p">:</span> <span class="s2">"text"</span><span class="p">,</span>
+    <span class="s2">".toml"</span><span class="p">:</span> <span class="s2">"toml"</span><span class="p">,</span> <span class="s2">".yaml"</span><span class="p">:</span> <span class="s2">"yaml"</span><span class="p">,</span> <span class="s2">".yml"</span><span class="p">:</span> <span class="s2">"yaml"</span><span class="p">,</span> <span class="s2">".cfg"</span><span class="p">:</span> <span class="s2">"ini"</span><span class="p">,</span> <span class="s2">".ini"</span><span class="p">:</span> <span class="s2">"ini"</span><span class="p">,</span>
+    <span class="s2">".html"</span><span class="p">:</span> <span class="s2">"html"</span><span class="p">,</span> <span class="s2">".css"</span><span class="p">:</span> <span class="s2">"css"</span><span class="p">,</span> <span class="s2">".scss"</span><span class="p">:</span> <span class="s2">"scss"</span><span class="p">,</span> <span class="s2">".sql"</span><span class="p">:</span> <span class="s2">"sql"</span><span class="p">,</span>
+    <span class="s2">".sh"</span><span class="p">:</span> <span class="s2">"bash"</span><span class="p">,</span> <span class="s2">".bash"</span><span class="p">:</span> <span class="s2">"bash"</span><span class="p">,</span> <span class="s2">".zsh"</span><span class="p">:</span> <span class="s2">"bash"</span><span class="p">,</span>
+    <span class="s2">".rs"</span><span class="p">:</span> <span class="s2">"rust"</span><span class="p">,</span> <span class="s2">".go"</span><span class="p">:</span> <span class="s2">"go"</span><span class="p">,</span> <span class="s2">".java"</span><span class="p">:</span> <span class="s2">"java"</span><span class="p">,</span> <span class="s2">".c"</span><span class="p">:</span> <span class="s2">"c"</span><span class="p">,</span> <span class="s2">".h"</span><span class="p">:</span> <span class="s2">"c"</span><span class="p">,</span>
+    <span class="s2">".cpp"</span><span class="p">:</span> <span class="s2">"cpp"</span><span class="p">,</span> <span class="s2">".hpp"</span><span class="p">:</span> <span class="s2">"cpp"</span><span class="p">,</span> <span class="s2">".rb"</span><span class="p">:</span> <span class="s2">"ruby"</span><span class="p">,</span> <span class="s2">".swift"</span><span class="p">:</span> <span class="s2">"swift"</span><span class="p">,</span> <span class="s2">".kt"</span><span class="p">:</span> <span class="s2">"kotlin"</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="fence_language">
+<a class="viewcode-back" href="../../_autosummary/contaix.code.html#contaix.code.fence_language">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">fence_language</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The code-fence language for ``path``, from its extension ('' when unknown).</span>
+
+<span class="sd">    &gt;&gt;&gt; fence_language('pkg/mod.py'), fence_language('src/App.tsx'), fence_language('LICENSE')</span>
+<span class="sd">    ('python', 'tsx', '')</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">FENCE_LANGUAGES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">path</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="s2">""</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="fenced_item">
+<a class="viewcode-back" href="../../_autosummary/contaix.code.html#contaix.code.fenced_item">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">fenced_item</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""One aggregate section: ``## key`` then the content in a fence of its language.</span>
+
+<span class="sd">    A fence longer than any backtick run in the content is used, so a Markdown file</span>
+<span class="sd">    that holds its own code blocks does not close the section early.</span>
+
+<span class="sd">    &gt;&gt;&gt; print(fenced_item('a.py', 'x = 1'))</span>
+<span class="sd">    ## a.py</span>
+<span class="sd">    &lt;BLANKLINE&gt;</span>
+<span class="sd">    ```python</span>
+<span class="sd">    x = 1</span>
+<span class="sd">    ```</span>
+<span class="sd">    """</span>
+    <span class="n">longest</span> <span class="o">=</span> <span class="nb">max</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">"`{3,}"</span><span class="p">,</span> <span class="n">value</span><span class="p">)),</span> <span class="n">default</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">fence</span> <span class="o">=</span> <span class="s2">"`"</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">longest</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"## </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="se">\n\n</span><span class="si">{</span><span class="n">fence</span><span class="si">}{</span><span class="n">fence_language</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">fence</span><span class="si">}</span><span class="s2">"</span></div>
+
+
+
+<div class="viewcode-block" id="repomix_packer">
+<a class="viewcode-back" href="../../_autosummary/contaix.code.html#contaix.code.repomix_packer">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">repomix_packer</span><span class="p">(</span><span class="n">rootdir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">compress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Pack ``rootdir`` with `repomix &lt;https://github.com/yamadashy/repomix&gt;`_ (MIT, Node).</span>
+
+<span class="sd">    Adds what the built-in walker does not do: Secretlint's secret scan and, with</span>
+<span class="sd">    ``compress=True``, Tree-sitter compression of code. Runs ``npx`` (so it needs Node)</span>
+<span class="sd">    on the pinned :data:`REPOMIX_SPEC`.</span>
+<span class="sd">    """</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+
+    <span class="n">npx</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">"npx"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">npx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="s2">"packer='repomix' needs Node's npx on PATH (https://nodejs.org/); "</span>
+            <span class="s2">"the default packer needs nothing"</span>
+        <span class="p">)</span>
+    <span class="n">argv</span> <span class="o">=</span> <span class="p">[</span><span class="n">npx</span><span class="p">,</span> <span class="s2">"-y"</span><span class="p">,</span> <span class="n">REPOMIX_SPEC</span><span class="p">,</span> <span class="n">rootdir</span><span class="p">,</span> <span class="s2">"--style"</span><span class="p">,</span> <span class="s2">"markdown"</span><span class="p">,</span> <span class="s2">"--stdout"</span><span class="p">,</span>
+            <span class="s2">"--quiet"</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">compress</span><span class="p">:</span>
+        <span class="n">argv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"--compress"</span><span class="p">)</span>
+    <span class="n">done</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">argv</span><span class="p">,</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">done</span><span class="o">.</span><span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"repomix exited </span><span class="si">{</span><span class="n">done</span><span class="o">.</span><span class="n">returncode</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="p">(</span><span class="n">done</span><span class="o">.</span><span class="n">stderr</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">''</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()[:</span><span class="mi">500</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">done</span><span class="o">.</span><span class="n">stdout</span></div>
+
+
+
+<span class="c1">#: The repomix release :func:`repomix_packer` runs (weighed in addaix/contaix#25).</span>
+<span class="n">REPOMIX_SPEC</span> <span class="o">=</span> <span class="s2">"repomix@1.19.0"</span>
+
+<span class="c1">#: Named alternatives to the built-in walker for ``code_aggregate(packer=...)``. A packer</span>
+<span class="c1">#: takes a folder and returns the packed text.</span>
+<span class="n">packers</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"repomix"</span><span class="p">:</span> <span class="n">repomix_packer</span><span class="p">}</span>
+
+
 <div class="viewcode-block" id="code_aggregate">
 <a class="viewcode-back" href="../../_autosummary/contaix.code.html#contaix.code.code_aggregate">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">code_aggregate</span><span class="p">(</span>
     <span class="n">code_src</span><span class="p">:</span> <span class="n">CodeSource</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">egress</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="n">Filepath</span><span class="p">]</span> <span class="o">=</span> <span class="n">identity</span><span class="p">,</span>
-    <span class="n">kv_to_item</span><span class="o">=</span><span class="k">lambda</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"## </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">```python</span><span class="se">\n</span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="se">\n</span><span class="s2">```"</span><span class="p">,</span>
+    <span class="n">kv_to_item</span><span class="o">=</span><span class="n">fenced_item</span><span class="p">,</span>
     <span class="n">keys_filt</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"\.py$"</span><span class="p">,</span>
     <span class="n">keys_exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">include_readme</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">_readme_from_parent_dir</span><span class="p">,</span>
+    <span class="n">packer</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">store_aggregate_kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""</span>
@@ -714,6 +885,11 @@
 <span class="sd">        include_readme (Callable): A function that takes the code_store as input and returns</span>
 <span class="sd">                                   the content of a README file to include in the aggregate.</span>
 <span class="sd">                                   If None, no README will be included.</span>
+<span class="sd">        packer: None (default) for the built-in walker, which honours ``.gitignore``,</span>
+<span class="sd">                skips binary files and fences each file in its language. ``"repomix"``</span>
+<span class="sd">                (a name in :data:`packers`) or any ``folder -&gt; str`` callable packs the</span>
+<span class="sd">                resolved folder instead; ``keys_filt``, ``keys_exclude``,</span>
+<span class="sd">                ``include_readme`` and ``kv_to_item`` then do not apply, ``egress`` does.</span>
 <span class="sd">        **store_aggregate_kwargs: Additional keyword arguments to pass to store_aggregate.</span>
 
 <span class="sd">    See dol.store_aggregate for more details.</span>
@@ -770,6 +946,17 @@
 
 <span class="sd">    """</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">dol.trans</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn_and_ignore_if_error</span>
+
+    <span class="k">if</span> <span class="n">packer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pack</span> <span class="o">=</span> <span class="n">packers</span><span class="p">[</span><span class="n">packer</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">packer</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">packer</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">code_src</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"packer= packs a folder; got a Mapping (use the default)"</span><span class="p">)</span>
+        <span class="n">packed</span> <span class="o">=</span> <span class="n">pack</span><span class="p">(</span><span class="n">resolve_code_source_dir_path</span><span class="p">(</span><span class="n">code_src</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">egress</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>  <span class="c1"># as store_aggregate does: save, return the text</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fullpath</span><span class="p">(</span><span class="n">egress</span><span class="p">),</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">packed</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">packed</span>
+        <span class="k">return</span> <span class="n">egress</span><span class="p">(</span><span class="n">packed</span><span class="p">)</span>
 
     <span class="n">code_store</span> <span class="o">=</span> <span class="n">resolve_code_source</span><span class="p">(</span>
         <span class="n">code_src</span><span class="p">,</span> <span class="n">keys_filt</span><span class="o">=</span><span class="n">keys_filt</span><span class="p">,</span> <span class="n">keys_exclude</span><span class="o">=</span><span class="n">keys_exclude</span>

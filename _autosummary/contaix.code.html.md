@@ -4,16 +4,25 @@ Tools to make AI contexts from code bases
 
 ### Module Attributes
 
-| [`DFLT_AGGREGATE_EXCLUDE_PATTERNS`](#contaix.code.DFLT_AGGREGATE_EXCLUDE_PATTERNS)   | Default regex patterns matching section paths that are (almost) never useful as AI context: vendored deps, VCS internals, build/cache outputs, lockfiles, and minified bundles/sourcemaps.   |
-|------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`BINARY_SNIFF_BYTES`](#contaix.code.BINARY_SNIFF_BYTES)              | How many leading bytes [`is_binary_file()`](#contaix.code.is_binary_file) reads.                                                                                            |
+|----------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`DFLT_AGGREGATE_EXCLUDE_PATTERNS`](#contaix.code.DFLT_AGGREGATE_EXCLUDE_PATTERNS) | Default regex patterns matching section paths that are (almost) never useful as AI context: vendored deps, VCS internals, build/cache outputs, lockfiles, and minified bundles/sourcemaps. |
+| [`FENCE_LANGUAGES`](#contaix.code.FENCE_LANGUAGES)                 | Code-fence language by file extension (the name GitHub's renderer knows); anything else gets a bare fence.                                                                                 |
+| [`REPOMIX_SPEC`](#contaix.code.REPOMIX_SPEC)                    | The repomix release [`repomix_packer()`](#contaix.code.repomix_packer) runs (weighed in addaix/contaix#25).                                                                 |
+| [`packers`](#contaix.code.packers)                         | Named alternatives to the built-in walker for `code_aggregate(packer=...)`.                                                                                                                |
 
 ### Functions
 
 | [`code_aggregate`](#contaix.code.code_aggregate)(code_src, \*[, egress, ...])     | Aggregates all code segments from the given code source (folder, github url, store).                                                         |
 |--------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| [`fence_language`](#contaix.code.fence_language)(path)                            | The code-fence language for `path`, from its extension ('' when unknown).                                                                    |
+| [`fenced_item`](#contaix.code.fenced_item)(key, value)                         | One aggregate section: `## key` then the content in a fence of its language.                                                                 |
+| [`git_tracked_files`](#contaix.code.git_tracked_files)(rootdir)                      | The files under `rootdir` git would track, relative to it; None outside a work tree.                                                         |
+| [`is_binary_file`](#contaix.code.is_binary_file)(path)                            | True when the first bytes of `path` hold a NUL (git's own heuristic).                                                                        |
 | [`is_local_pkg_name`](#contaix.code.is_local_pkg_name)(name)                         | Returns True if and only if name is the name of a local package.                                                                             |
 | [`iter_pruned_aggregate_lines`](#contaix.code.iter_pruned_aggregate_lines)(lines, \*[, ...])   | Stream `lines` of an aggregated-code markdown, yielding only the lines that belong to sections whose header path does *not* match `exclude`. |
 | [`prune_code_aggregate`](#contaix.code.prune_code_aggregate)(src, \*[, exclude, ...])   | Remove bloated sections (vendored deps, build output, lockfiles, minified bundles, ...) from an aggregated-code markdown.                    |
+| [`repomix_packer`](#contaix.code.repomix_packer)(rootdir, \*[, compress])         | Pack `rootdir` with [repomix](https://github.com/yamadashy/repomix) (MIT, Node).                                                             |
 | [`resolve_code_source`](#contaix.code.resolve_code_source)(code_src[, keys_filt, ...]) | Will resolve code_src to a Mapping whose values are the code strings                                                                         |
 | [`resolve_code_source_dir_path`](#contaix.code.resolve_code_source_dir_path)(code_src)          | Resolves code_src to a directory path string.                                                                                                |
 
@@ -22,11 +31,20 @@ Tools to make AI contexts from code bases
 | [`PackageCodeContexts`](#contaix.code.PackageCodeContexts)([save_folder])   | Manages aggregation and saves of the code of local packages   |
 |---------------------------------------------------------------------------------------|---------------------------------------------------------------|
 
+### contaix.code.BINARY_SNIFF_BYTES *= 8000*
+
+How many leading bytes [`is_binary_file()`](#contaix.code.is_binary_file) reads.
+
 ### contaix.code.DFLT_AGGREGATE_EXCLUDE_PATTERNS *= ('(^|/)node_modules/', '(^|/)\\\\.git/', '(^|/)bower_components/', '(^|/)(dist|build|out|target|\\\\.next|\\\\.nuxt|\\\\.turbo|\\\\.cache|\\\\.parcel-cache|coverage|_\_pycache_\_|\\\\.pytest_cache|\\\\.mypy_cache|\\\\.tox|\\\\.venv|venv|site-packages|vendor)/', '(^|/)(package-lock\\\\.json|yarn\\\\.lock|pnpm-lock\\\\.yaml|npm-shrinkwrap\\\\.json|poetry\\\\.lock|Pipfile\\\\.lock|Cargo\\\\.lock|composer\\\\.lock|Gemfile\\\\.lock|go\\\\.sum)$', '\\\\.min\\\\.(js|mjs|cjs|css)$', '\\\\.(js|mjs|cjs|css)\\\\.map$', '\\\\.map$')*
 
 Default regex patterns matching section paths that are (almost) never useful as AI
 context: vendored deps, VCS internals, build/cache outputs, lockfiles, and minified
 bundles/sourcemaps. Patterns are matched (`re.search`) against each section’s path.
+
+### contaix.code.FENCE_LANGUAGES *= {'.bash': 'bash', '.c': 'c', '.cfg': 'ini', '.cjs': 'javascript', '.cpp': 'cpp', '.css': 'css', '.go': 'go', '.h': 'c', '.hpp': 'cpp', '.html': 'html', '.ini': 'ini', '.ipynb': 'json', '.java': 'java', '.js': 'javascript', '.json': 'json', '.jsx': 'jsx', '.kt': 'kotlin', '.md': 'markdown', '.mjs': 'javascript', '.py': 'python', '.pyi': 'python', '.rb': 'ruby', '.rs': 'rust', '.rst': 'rst', '.scss': 'scss', '.sh': 'bash', '.sql': 'sql', '.swift': 'swift', '.toml': 'toml', '.ts': 'typescript', '.tsx': 'tsx', '.txt': 'text', '.yaml': 'yaml', '.yml': 'yaml', '.zsh': 'bash'}*
+
+Code-fence language by file extension (the name GitHub’s renderer knows); anything
+else gets a bare fence.
 
 ### *class* contaix.code.PackageCodeContexts(save_folder='.')
 
@@ -62,7 +80,11 @@ or, to save multiple package’s code in a single file, in a specific folder.
 >>> PackageCodeContexts('some/folder/path').save_multiple_pkgs_code(['aix', 'dol'])
 ```
 
-### contaix.code.code_aggregate(code_src, \*, egress=<function identity>, kv_to_item=<function <lambda>>, keys_filt='\\\\.py$', keys_exclude=None, include_readme=<function \_readme_from_parent_dir>, \*\*store_aggregate_kwargs)
+### contaix.code.REPOMIX_SPEC *= 'repomix@1.19.0'*
+
+The repomix release [`repomix_packer()`](#contaix.code.repomix_packer) runs (weighed in addaix/contaix#25).
+
+### contaix.code.code_aggregate(code_src, \*, egress=<function identity>, kv_to_item=<function fenced_item>, keys_filt='\\\\.py$', keys_exclude=None, include_readme=<function \_readme_from_parent_dir>, packer=None, \*\*store_aggregate_kwargs)
 
 Aggregates all code segments from the given code source (folder, github url, store).
 
@@ -85,6 +107,11 @@ specific code base.
   * **include_readme** ([`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)) – A function that takes the code_store as input and returns
     the content of a README file to include in the aggregate.
     If None, no README will be included.
+  * **packer** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`None`](https://docs.python.org/3/builtins/constants.html#None), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)]) – None (default) for the built-in walker, which honours `.gitignore`,
+    skips binary files and fences each file in its language. `"repomix"`
+    (a name in [`packers`](#contaix.code.packers)) or any `folder -> str` callable packs the
+    resolved folder instead; `keys_filt`, `keys_exclude`,
+    `include_readme` and `kv_to_item` then do not apply, `egress` does.
   * **\*\*store_aggregate_kwargs** – Additional keyword arguments to pass to store_aggregate.
 * **Return type:**
   [*Any*](https://docs.python.org/3/library/typing.html#typing.Any)
@@ -152,6 +179,68 @@ repository.
 >>> string = code_aggregate('https://github.com/thorwhalen/aix')
 ```
 
+### contaix.code.fence_language(path)
+
+The code-fence language for `path`, from its extension (’’ when unknown).
+
+```pycon
+>>> fence_language('pkg/mod.py'), fence_language('src/App.tsx'), fence_language('LICENSE')
+('python', 'tsx', '')
+```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+### contaix.code.fenced_item(key, value)
+
+One aggregate section: `## key` then the content in a fence of its language.
+
+A fence longer than any backtick run in the content is used, so a Markdown file
+that holds its own code blocks does not close the section early.
+
+```pycon
+>>> print(fenced_item('a.py', 'x = 1'))
+## a.py
+```
+
+```python
+x = 1
+```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+### contaix.code.git_tracked_files(rootdir)
+
+The files under `rootdir` git would track, relative to it; None outside a work tree.
+
+Untracked files count unless `.gitignore` (or `.git/info/exclude`, or the global
+excludes file) ignores them, which is what a reader of the repo would see.
+
+```pycon
+>>> git_tracked_files('/') is None or isinstance(git_tracked_files('/'), frozenset)
+True
+```
+
+* **Return type:**
+  [`Optional`](https://docs.python.org/3/library/typing.html#typing.Optional)[[`frozenset`](https://docs.python.org/3/builtins/stdtypes.html#frozenset)]
+
+### contaix.code.is_binary_file(path)
+
+True when the first bytes of `path` hold a NUL (git’s own heuristic).
+
+```pycon
+>>> import tempfile, os
+>>> with tempfile.NamedTemporaryFile(delete=False) as f:
+...     _ = f.write(bytes([0x89, 0x50, 0, 0]))
+>>> is_binary_file(f.name)
+True
+>>> os.unlink(f.name)
+```
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
+
 ### contaix.code.is_local_pkg_name(name)
 
 Returns True if and only if name is the name of a local package.
@@ -210,6 +299,11 @@ True
 False
 ```
 
+### contaix.code.packers *: [dict](https://docs.python.org/3/builtins/stdtypes.html#dict)* *= {'repomix': <function repomix_packer>}*
+
+Named alternatives to the built-in walker for `code_aggregate(packer=...)`. A packer
+takes a folder and returns the packed text.
+
 ### contaix.code.prune_code_aggregate(src, \*, exclude=('(^|/)node_modules/', '(^|/)\\\\.git/', '(^|/)bower_components/', '(^|/)(dist|build|out|target|\\\\.next|\\\\.nuxt|\\\\.turbo|\\\\.cache|\\\\.parcel-cache|coverage|_\_pycache_\_|\\\\.pytest_cache|\\\\.mypy_cache|\\\\.tox|\\\\.venv|venv|site-packages|vendor)/', '(^|/)(package-lock\\\\.json|yarn\\\\.lock|pnpm-lock\\\\.yaml|npm-shrinkwrap\\\\.json|poetry\\\\.lock|Pipfile\\\\.lock|Cargo\\\\.lock|composer\\\\.lock|Gemfile\\\\.lock|go\\\\.sum)$', '\\\\.min\\\\.(js|mjs|cjs|css)$', '\\\\.(js|mjs|cjs|css)\\\\.map$', '\\\\.map$'), egress=<function identity>, header_prefix='## ', fence='\`\`\`', on_drop=None)
 
 Remove bloated sections (vendored deps, build output, lockfiles, minified
@@ -243,7 +337,18 @@ files.
 False
 ```
 
-### contaix.code.resolve_code_source(code_src, keys_filt=<function <lambda>>, \*, keys_exclude=None)
+### contaix.code.repomix_packer(rootdir, , compress=False)
+
+Pack `rootdir` with [repomix](https://github.com/yamadashy/repomix) (MIT, Node).
+
+Adds what the built-in walker does not do: Secretlint’s secret scan and, with
+`compress=True`, Tree-sitter compression of code. Runs `npx` (so it needs Node)
+on the pinned [`REPOMIX_SPEC`](#contaix.code.REPOMIX_SPEC).
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+### contaix.code.resolve_code_source(code_src, keys_filt=<function <lambda>>, \*, keys_exclude=None, respect_gitignore=True, skip_binary=True)
 
 Will resolve code_src to a Mapping whose values are the code strings
 
@@ -259,6 +364,17 @@ Will resolve code_src to a Mapping whose values are the code strings
     predicate identifying keys to *exclude* (e.g. vendored deps, build outputs).
     Applied on top of (after) `keys_filt`. Pass
     `DFLT_AGGREGATE_EXCLUDE_PATTERNS` to skip the usual bloat.
+  * **respect_gitignore** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – For a folder inside a git work tree, keep only the files git
+    would track (`git ls-files --cached --others --exclude-standard`), so
+
+    ```
+    ``
+    ```
+
+    .gitignore\`\`d build outputs and vendored trees never enter. A no-op outside
+    a work tree or without git.
+  * **skip_binary** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – For a folder, drop files whose first bytes hold a NUL (images,
+    compiled files, archives).
 * **Return type:**
   [`Mapping`](https://docs.python.org/3/library/typing.html#typing.Mapping)
 

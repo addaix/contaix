@@ -263,8 +263,20 @@
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#contaix.code.DFLT_AGGREGATE_EXCLUDE_PATTERNS" title="contaix.code.DFLT_AGGREGATE_EXCLUDE_PATTERNS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DFLT_AGGREGATE_EXCLUDE_PATTERNS</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#contaix.code.BINARY_SNIFF_BYTES" title="contaix.code.BINARY_SNIFF_BYTES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BINARY_SNIFF_BYTES</span></code></a></p></td>
+<td><p>How many leading bytes <a class="reference internal" href="#contaix.code.is_binary_file" title="contaix.code.is_binary_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">is_binary_file()</span></code></a> reads.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#contaix.code.DFLT_AGGREGATE_EXCLUDE_PATTERNS" title="contaix.code.DFLT_AGGREGATE_EXCLUDE_PATTERNS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DFLT_AGGREGATE_EXCLUDE_PATTERNS</span></code></a></p></td>
 <td><p>Default regex patterns matching section paths that are (almost) never useful as AI context: vendored deps, VCS internals, build/cache outputs, lockfiles, and minified bundles/sourcemaps.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#contaix.code.FENCE_LANGUAGES" title="contaix.code.FENCE_LANGUAGES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FENCE_LANGUAGES</span></code></a></p></td>
+<td><p>Code-fence language by file extension (the name GitHub's renderer knows); anything else gets a bare fence.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#contaix.code.REPOMIX_SPEC" title="contaix.code.REPOMIX_SPEC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">REPOMIX_SPEC</span></code></a></p></td>
+<td><p>The repomix release <a class="reference internal" href="#contaix.code.repomix_packer" title="contaix.code.repomix_packer"><code class="xref py py-func docutils literal notranslate"><span class="pre">repomix_packer()</span></code></a> runs (weighed in addaix/contaix#25).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#contaix.code.packers" title="contaix.code.packers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">packers</span></code></a></p></td>
+<td><p>Named alternatives to the built-in walker for <code class="docutils literal notranslate"><span class="pre">code_aggregate(packer=...)</span></code>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -276,6 +288,18 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#contaix.code.code_aggregate" title="contaix.code.code_aggregate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">code_aggregate</span></code></a>(code_src, *[, egress, ...])</p></td>
 <td><p>Aggregates all code segments from the given code source (folder, github url, store).</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#contaix.code.fence_language" title="contaix.code.fence_language"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fence_language</span></code></a>(path)</p></td>
+<td><p>The code-fence language for <code class="docutils literal notranslate"><span class="pre">path</span></code>, from its extension ('' when unknown).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#contaix.code.fenced_item" title="contaix.code.fenced_item"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fenced_item</span></code></a>(key, value)</p></td>
+<td><p>One aggregate section: <code class="docutils literal notranslate"><span class="pre">##</span> <span class="pre">key</span></code> then the content in a fence of its language.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#contaix.code.git_tracked_files" title="contaix.code.git_tracked_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">git_tracked_files</span></code></a>(rootdir)</p></td>
+<td><p>The files under <code class="docutils literal notranslate"><span class="pre">rootdir</span></code> git would track, relative to it; None outside a work tree.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#contaix.code.is_binary_file" title="contaix.code.is_binary_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_binary_file</span></code></a>(path)</p></td>
+<td><p>True when the first bytes of <code class="docutils literal notranslate"><span class="pre">path</span></code> hold a NUL (git's own heuristic).</p></td>
+</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#contaix.code.is_local_pkg_name" title="contaix.code.is_local_pkg_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_local_pkg_name</span></code></a>(name)</p></td>
 <td><p>Returns True if and only if name is the name of a local package.</p></td>
 </tr>
@@ -285,10 +309,13 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#contaix.code.prune_code_aggregate" title="contaix.code.prune_code_aggregate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prune_code_aggregate</span></code></a>(src, *[, exclude, ...])</p></td>
 <td><p>Remove bloated sections (vendored deps, build output, lockfiles, minified bundles, ...) from an aggregated-code markdown.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#contaix.code.resolve_code_source" title="contaix.code.resolve_code_source"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resolve_code_source</span></code></a>(code_src[, keys_filt, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#contaix.code.repomix_packer" title="contaix.code.repomix_packer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repomix_packer</span></code></a>(rootdir, *[, compress])</p></td>
+<td><p>Pack <code class="docutils literal notranslate"><span class="pre">rootdir</span></code> with <a class="reference external" href="https://github.com/yamadashy/repomix">repomix</a> (MIT, Node).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#contaix.code.resolve_code_source" title="contaix.code.resolve_code_source"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resolve_code_source</span></code></a>(code_src[, keys_filt, ...])</p></td>
 <td><p>Will resolve code_src to a Mapping whose values are the code strings</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#contaix.code.resolve_code_source_dir_path" title="contaix.code.resolve_code_source_dir_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resolve_code_source_dir_path</span></code></a>(code_src)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#contaix.code.resolve_code_source_dir_path" title="contaix.code.resolve_code_source_dir_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resolve_code_source_dir_path</span></code></a>(code_src)</p></td>
 <td><p>Resolves code_src to a directory path string.</p></td>
 </tr>
 </tbody>
@@ -305,11 +332,24 @@
 </table>
 </div>
 <dl class="py data">
+<dt class="sig sig-object py" id="contaix.code.BINARY_SNIFF_BYTES">
+<span class="sig-prename descclassname"><span class="pre">contaix.code.</span></span><span class="sig-name descname"><span class="pre">BINARY_SNIFF_BYTES</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8000</span></span><a class="headerlink" href="#contaix.code.BINARY_SNIFF_BYTES" title="Link to this definition">¶</a></dt>
+<dd><p>How many leading bytes <a class="reference internal" href="#contaix.code.is_binary_file" title="contaix.code.is_binary_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">is_binary_file()</span></code></a> reads.</p>
+</dd></dl>
+
+<dl class="py data">
 <dt class="sig sig-object py" id="contaix.code.DFLT_AGGREGATE_EXCLUDE_PATTERNS">
 <span class="sig-prename descclassname"><span class="pre">contaix.code.</span></span><span class="sig-name descname"><span class="pre">DFLT_AGGREGATE_EXCLUDE_PATTERNS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('(^|/)node_modules/',</span> <span class="pre">'(^|/)\\.git/',</span> <span class="pre">'(^|/)bower_components/',</span> <span class="pre">'(^|/)(dist|build|out|target|\\.next|\\.nuxt|\\.turbo|\\.cache|\\.parcel-cache|coverage|__pycache__|\\.pytest_cache|\\.mypy_cache|\\.tox|\\.venv|venv|site-packages|vendor)/',</span> <span class="pre">'(^|/)(package-lock\\.json|yarn\\.lock|pnpm-lock\\.yaml|npm-shrinkwrap\\.json|poetry\\.lock|Pipfile\\.lock|Cargo\\.lock|composer\\.lock|Gemfile\\.lock|go\\.sum)$',</span> <span class="pre">'\\.min\\.(js|mjs|cjs|css)$',</span> <span class="pre">'\\.(js|mjs|cjs|css)\\.map$',</span> <span class="pre">'\\.map$')</span></span><a class="headerlink" href="#contaix.code.DFLT_AGGREGATE_EXCLUDE_PATTERNS" title="Link to this definition">¶</a></dt>
 <dd><p>Default regex patterns matching section paths that are (almost) never useful as AI
 context: vendored deps, VCS internals, build/cache outputs, lockfiles, and minified
 bundles/sourcemaps. Patterns are matched (<code class="docutils literal notranslate"><span class="pre">re.search</span></code>) against each section’s path.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="contaix.code.FENCE_LANGUAGES">
+<span class="sig-prename descclassname"><span class="pre">contaix.code.</span></span><span class="sig-name descname"><span class="pre">FENCE_LANGUAGES</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'.bash':</span> <span class="pre">'bash',</span> <span class="pre">'.c':</span> <span class="pre">'c',</span> <span class="pre">'.cfg':</span> <span class="pre">'ini',</span> <span class="pre">'.cjs':</span> <span class="pre">'javascript',</span> <span class="pre">'.cpp':</span> <span class="pre">'cpp',</span> <span class="pre">'.css':</span> <span class="pre">'css',</span> <span class="pre">'.go':</span> <span class="pre">'go',</span> <span class="pre">'.h':</span> <span class="pre">'c',</span> <span class="pre">'.hpp':</span> <span class="pre">'cpp',</span> <span class="pre">'.html':</span> <span class="pre">'html',</span> <span class="pre">'.ini':</span> <span class="pre">'ini',</span> <span class="pre">'.ipynb':</span> <span class="pre">'json',</span> <span class="pre">'.java':</span> <span class="pre">'java',</span> <span class="pre">'.js':</span> <span class="pre">'javascript',</span> <span class="pre">'.json':</span> <span class="pre">'json',</span> <span class="pre">'.jsx':</span> <span class="pre">'jsx',</span> <span class="pre">'.kt':</span> <span class="pre">'kotlin',</span> <span class="pre">'.md':</span> <span class="pre">'markdown',</span> <span class="pre">'.mjs':</span> <span class="pre">'javascript',</span> <span class="pre">'.py':</span> <span class="pre">'python',</span> <span class="pre">'.pyi':</span> <span class="pre">'python',</span> <span class="pre">'.rb':</span> <span class="pre">'ruby',</span> <span class="pre">'.rs':</span> <span class="pre">'rust',</span> <span class="pre">'.rst':</span> <span class="pre">'rst',</span> <span class="pre">'.scss':</span> <span class="pre">'scss',</span> <span class="pre">'.sh':</span> <span class="pre">'bash',</span> <span class="pre">'.sql':</span> <span class="pre">'sql',</span> <span class="pre">'.swift':</span> <span class="pre">'swift',</span> <span class="pre">'.toml':</span> <span class="pre">'toml',</span> <span class="pre">'.ts':</span> <span class="pre">'typescript',</span> <span class="pre">'.tsx':</span> <span class="pre">'tsx',</span> <span class="pre">'.txt':</span> <span class="pre">'text',</span> <span class="pre">'.yaml':</span> <span class="pre">'yaml',</span> <span class="pre">'.yml':</span> <span class="pre">'yaml',</span> <span class="pre">'.zsh':</span> <span class="pre">'bash'}</span></span><a class="headerlink" href="#contaix.code.FENCE_LANGUAGES" title="Link to this definition">¶</a></dt>
+<dd><p>Code-fence language by file extension (the name GitHub’s renderer knows); anything
+else gets a bare fence.</p>
 </dd></dl>
 
 <dl class="py class">
@@ -354,9 +394,15 @@ Saves the result to a file if a name is provided.</p>
 
 </dd></dl>
 
+<dl class="py data">
+<dt class="sig sig-object py" id="contaix.code.REPOMIX_SPEC">
+<span class="sig-prename descclassname"><span class="pre">contaix.code.</span></span><span class="sig-name descname"><span class="pre">REPOMIX_SPEC</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'repomix&#64;1.19.0'</span></span><a class="headerlink" href="#contaix.code.REPOMIX_SPEC" title="Link to this definition">¶</a></dt>
+<dd><p>The repomix release <a class="reference internal" href="#contaix.code.repomix_packer" title="contaix.code.repomix_packer"><code class="xref py py-func docutils literal notranslate"><span class="pre">repomix_packer()</span></code></a> runs (weighed in addaix/contaix#25).</p>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="contaix.code.code_aggregate">
-<span class="sig-prename descclassname"><span class="pre">contaix.code.</span></span><span class="sig-name descname"><span class="pre">code_aggregate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">egress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">identity&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kv_to_item</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys_filt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\\.py$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys_exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_readme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">_readme_from_parent_dir&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**store_aggregate_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/contaix/code.html#code_aggregate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#contaix.code.code_aggregate" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">contaix.code.</span></span><span class="sig-name descname"><span class="pre">code_aggregate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">egress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">identity&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kv_to_item</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">fenced_item&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys_filt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\\.py$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys_exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_readme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">_readme_from_parent_dir&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">packer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**store_aggregate_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/contaix/code.html#code_aggregate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#contaix.code.code_aggregate" title="Link to this definition">¶</a></dt>
 <dd><p>Aggregates all code segments from the given code source (folder, github url, store).</p>
 <p>This is useful when you want to use AI to search and respond to questions about a
 specific code base.</p>
@@ -378,6 +424,11 @@ skip vendored deps, build outputs, lockfiles and minified bundles.</p></li>
 <li><p><strong>include_readme</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.15)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a></span>) – A function that takes the code_store as input and returns
 the content of a README file to include in the aggregate.
 If None, no README will be included.</p></li>
+<li><p><strong>packer</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Union</span></code></a>[<span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span>, <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.15)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>]</span>) – None (default) for the built-in walker, which honours <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code>,
+skips binary files and fences each file in its language. <code class="docutils literal notranslate"><span class="pre">&quot;repomix&quot;</span></code>
+(a name in <a class="reference internal" href="#contaix.code.packers" title="contaix.code.packers"><code class="xref py py-data docutils literal notranslate"><span class="pre">packers</span></code></a>) or any <code class="docutils literal notranslate"><span class="pre">folder</span> <span class="pre">-&gt;</span> <span class="pre">str</span></code> callable packs the
+resolved folder instead; <code class="docutils literal notranslate"><span class="pre">keys_filt</span></code>, <code class="docutils literal notranslate"><span class="pre">keys_exclude</span></code>,
+<code class="docutils literal notranslate"><span class="pre">include_readme</span></code> and <code class="docutils literal notranslate"><span class="pre">kv_to_item</span></code> then do not apply, <code class="docutils literal notranslate"><span class="pre">egress</span></code> does.</p></li>
 <li><p><strong>**store_aggregate_kwargs</strong> – Additional keyword arguments to pass to store_aggregate.</p></li>
 </ul>
 </dd>
@@ -440,6 +491,77 @@ repository.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">string</span> <span class="o">=</span> <span class="n">code_aggregate</span><span class="p">(</span><span class="s1">'https://github.com/thorwhalen/aix'</span><span class="p">)</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="contaix.code.fence_language">
+<span class="sig-prename descclassname"><span class="pre">contaix.code.</span></span><span class="sig-name descname"><span class="pre">fence_language</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/contaix/code.html#fence_language"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#contaix.code.fence_language" title="Link to this definition">¶</a></dt>
+<dd><p>The code-fence language for <code class="docutils literal notranslate"><span class="pre">path</span></code>, from its extension (’’ when unknown).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fence_language</span><span class="p">(</span><span class="s1">'pkg/mod.py'</span><span class="p">),</span> <span class="n">fence_language</span><span class="p">(</span><span class="s1">'src/App.tsx'</span><span class="p">),</span> <span class="n">fence_language</span><span class="p">(</span><span class="s1">'LICENSE'</span><span class="p">)</span>
+<span class="go">('python', 'tsx', '')</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="contaix.code.fenced_item">
+<span class="sig-prename descclassname"><span class="pre">contaix.code.</span></span><span class="sig-name descname"><span class="pre">fenced_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/contaix/code.html#fenced_item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#contaix.code.fenced_item" title="Link to this definition">¶</a></dt>
+<dd><p>One aggregate section: <code class="docutils literal notranslate"><span class="pre">##</span> <span class="pre">key</span></code> then the content in a fence of its language.</p>
+<p>A fence longer than any backtick run in the content is used, so a Markdown file
+that holds its own code blocks does not close the section early.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">fenced_item</span><span class="p">(</span><span class="s1">'a.py'</span><span class="p">,</span> <span class="s1">'x = 1'</span><span class="p">))</span>
+<span class="go">## a.py</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="contaix.code.git_tracked_files">
+<span class="sig-prename descclassname"><span class="pre">contaix.code.</span></span><span class="sig-name descname"><span class="pre">git_tracked_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rootdir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/contaix/code.html#git_tracked_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#contaix.code.git_tracked_files" title="Link to this definition">¶</a></dt>
+<dd><p>The files under <code class="docutils literal notranslate"><span class="pre">rootdir</span></code> git would track, relative to it; None outside a work tree.</p>
+<p>Untracked files count unless <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> (or <code class="docutils literal notranslate"><span class="pre">.git/info/exclude</span></code>, or the global
+excludes file) ignores them, which is what a reader of the repo would see.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">git_tracked_files</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">git_tracked_files</span><span class="p">(</span><span class="s1">'/'</span><span class="p">),</span> <span class="nb">frozenset</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.15)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#frozenset" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">frozenset</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="contaix.code.is_binary_file">
+<span class="sig-prename descclassname"><span class="pre">contaix.code.</span></span><span class="sig-name descname"><span class="pre">is_binary_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/contaix/code.html#is_binary_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#contaix.code.is_binary_file" title="Link to this definition">¶</a></dt>
+<dd><p>True when the first bytes of <code class="docutils literal notranslate"><span class="pre">path</span></code> hold a NUL (git’s own heuristic).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">_</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">bytes</span><span class="p">([</span><span class="mh">0x89</span><span class="p">,</span> <span class="mh">0x50</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_binary_file</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -508,6 +630,13 @@ logging/counting what was removed).</p></li>
 </div>
 </dd></dl>
 
+<dl class="py data">
+<dt class="sig sig-object py" id="contaix.code.packers">
+<span class="sig-prename descclassname"><span class="pre">contaix.code.</span></span><span class="sig-name descname"><span class="pre">packers</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'repomix':</span> <span class="pre">&lt;function</span> <span class="pre">repomix_packer&gt;}</span></span><a class="headerlink" href="#contaix.code.packers" title="Link to this definition">¶</a></dt>
+<dd><p>Named alternatives to the built-in walker for <code class="docutils literal notranslate"><span class="pre">code_aggregate(packer=...)</span></code>. A packer
+takes a folder and returns the packed text.</p>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="contaix.code.prune_code_aggregate">
 <span class="sig-prename descclassname"><span class="pre">contaix.code.</span></span><span class="sig-name descname"><span class="pre">prune_code_aggregate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('(^|/)node_modules/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'(^|/)\\.git/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'(^|/)bower_components/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'(^|/)(dist|build|out|target|\\.next|\\.nuxt|\\.turbo|\\.cache|\\.parcel-cache|coverage|__pycache__|\\.pytest_cache|\\.mypy_cache|\\.tox|\\.venv|venv|site-packages|vendor)/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'(^|/)(package-lock\\.json|yarn\\.lock|pnpm-lock\\.yaml|npm-shrinkwrap\\.json|poetry\\.lock|Pipfile\\.lock|Cargo\\.lock|composer\\.lock|Gemfile\\.lock|go\\.sum)$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'\\.min\\.(js|mjs|cjs|css)$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'\\.(js|mjs|cjs|css)\\.map$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'\\.map$')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">egress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">identity&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'##</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'```'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_drop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/contaix/code.html#prune_code_aggregate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#contaix.code.prune_code_aggregate" title="Link to this definition">¶</a></dt>
@@ -547,8 +676,22 @@ that file (memory-safe for huge inputs) and return the filepath.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="contaix.code.repomix_packer">
+<span class="sig-prename descclassname"><span class="pre">contaix.code.</span></span><span class="sig-name descname"><span class="pre">repomix_packer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rootdir</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">compress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/contaix/code.html#repomix_packer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#contaix.code.repomix_packer" title="Link to this definition">¶</a></dt>
+<dd><p>Pack <code class="docutils literal notranslate"><span class="pre">rootdir</span></code> with <a class="reference external" href="https://github.com/yamadashy/repomix">repomix</a> (MIT, Node).</p>
+<p>Adds what the built-in walker does not do: Secretlint’s secret scan and, with
+<code class="docutils literal notranslate"><span class="pre">compress=True</span></code>, Tree-sitter compression of code. Runs <code class="docutils literal notranslate"><span class="pre">npx</span></code> (so it needs Node)
+on the pinned <a class="reference internal" href="#contaix.code.REPOMIX_SPEC" title="contaix.code.REPOMIX_SPEC"><code class="xref py py-data docutils literal notranslate"><span class="pre">REPOMIX_SPEC</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="contaix.code.resolve_code_source">
-<span class="sig-prename descclassname"><span class="pre">contaix.code.</span></span><span class="sig-name descname"><span class="pre">resolve_code_source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys_filt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys_exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/contaix/code.html#resolve_code_source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#contaix.code.resolve_code_source" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">contaix.code.</span></span><span class="sig-name descname"><span class="pre">resolve_code_source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys_filt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys_exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">respect_gitignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_binary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/contaix/code.html#resolve_code_source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#contaix.code.resolve_code_source" title="Link to this definition">¶</a></dt>
 <dd><p>Will resolve code_src to a Mapping whose values are the code strings</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -564,6 +707,12 @@ If a string, it will be compiled to a regex pattern.</p></li>
 predicate identifying keys to <em>exclude</em> (e.g. vendored deps, build outputs).
 Applied on top of (after) <code class="docutils literal notranslate"><span class="pre">keys_filt</span></code>. Pass
 <code class="docutils literal notranslate"><span class="pre">DFLT_AGGREGATE_EXCLUDE_PATTERNS</span></code> to skip the usual bloat.</p></li>
+<li><p><strong>respect_gitignore</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – For a folder inside a git work tree, keep only the files git
+would track (<code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">ls-files</span> <span class="pre">--cached</span> <span class="pre">--others</span> <span class="pre">--exclude-standard</span></code>), so
+<a href="#id2"><span class="problematic" id="id3">``</span></a>.gitignore``d build outputs and vendored trees never enter. A no-op outside
+a work tree or without git.</p></li>
+<li><p><strong>skip_binary</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – For a folder, drop files whose first bytes hold a NUL (images,
+compiled files, archives).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -653,17 +802,26 @@ or an imported package (must contain a __path__ atribute)</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">contaix.code</a><ul>
+<li><a class="reference internal" href="#contaix.code.BINARY_SNIFF_BYTES"><code class="docutils literal notranslate"><span class="pre">BINARY_SNIFF_BYTES</span></code></a></li>
 <li><a class="reference internal" href="#contaix.code.DFLT_AGGREGATE_EXCLUDE_PATTERNS"><code class="docutils literal notranslate"><span class="pre">DFLT_AGGREGATE_EXCLUDE_PATTERNS</span></code></a></li>
+<li><a class="reference internal" href="#contaix.code.FENCE_LANGUAGES"><code class="docutils literal notranslate"><span class="pre">FENCE_LANGUAGES</span></code></a></li>
 <li><a class="reference internal" href="#contaix.code.PackageCodeContexts"><code class="docutils literal notranslate"><span class="pre">PackageCodeContexts</span></code></a><ul>
 <li><a class="reference internal" href="#contaix.code.PackageCodeContexts.multiple_pkgs_code"><code class="docutils literal notranslate"><span class="pre">PackageCodeContexts.multiple_pkgs_code()</span></code></a></li>
 <li><a class="reference internal" href="#contaix.code.PackageCodeContexts.save_multiple_pkgs_code"><code class="docutils literal notranslate"><span class="pre">PackageCodeContexts.save_multiple_pkgs_code()</span></code></a></li>
 <li><a class="reference internal" href="#contaix.code.PackageCodeContexts.save_single"><code class="docutils literal notranslate"><span class="pre">PackageCodeContexts.save_single()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#contaix.code.REPOMIX_SPEC"><code class="docutils literal notranslate"><span class="pre">REPOMIX_SPEC</span></code></a></li>
 <li><a class="reference internal" href="#contaix.code.code_aggregate"><code class="docutils literal notranslate"><span class="pre">code_aggregate()</span></code></a></li>
+<li><a class="reference internal" href="#contaix.code.fence_language"><code class="docutils literal notranslate"><span class="pre">fence_language()</span></code></a></li>
+<li><a class="reference internal" href="#contaix.code.fenced_item"><code class="docutils literal notranslate"><span class="pre">fenced_item()</span></code></a></li>
+<li><a class="reference internal" href="#contaix.code.git_tracked_files"><code class="docutils literal notranslate"><span class="pre">git_tracked_files()</span></code></a></li>
+<li><a class="reference internal" href="#contaix.code.is_binary_file"><code class="docutils literal notranslate"><span class="pre">is_binary_file()</span></code></a></li>
 <li><a class="reference internal" href="#contaix.code.is_local_pkg_name"><code class="docutils literal notranslate"><span class="pre">is_local_pkg_name()</span></code></a></li>
 <li><a class="reference internal" href="#contaix.code.iter_pruned_aggregate_lines"><code class="docutils literal notranslate"><span class="pre">iter_pruned_aggregate_lines()</span></code></a></li>
+<li><a class="reference internal" href="#contaix.code.packers"><code class="docutils literal notranslate"><span class="pre">packers</span></code></a></li>
 <li><a class="reference internal" href="#contaix.code.prune_code_aggregate"><code class="docutils literal notranslate"><span class="pre">prune_code_aggregate()</span></code></a></li>
+<li><a class="reference internal" href="#contaix.code.repomix_packer"><code class="docutils literal notranslate"><span class="pre">repomix_packer()</span></code></a></li>
 <li><a class="reference internal" href="#contaix.code.resolve_code_source"><code class="docutils literal notranslate"><span class="pre">resolve_code_source()</span></code></a></li>
 <li><a class="reference internal" href="#contaix.code.resolve_code_source_dir_path"><code class="docutils literal notranslate"><span class="pre">resolve_code_source_dir_path()</span></code></a></li>
 </ul>

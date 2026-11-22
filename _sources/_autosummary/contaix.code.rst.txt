@@ -8,16 +8,25 @@ contaix.code
 
    .. autosummary::
    
+      BINARY_SNIFF_BYTES
       DFLT_AGGREGATE_EXCLUDE_PATTERNS
+      FENCE_LANGUAGES
+      REPOMIX_SPEC
+      packers
    
    .. rubric:: Functions
 
    .. autosummary::
    
       code_aggregate
+      fence_language
+      fenced_item
+      git_tracked_files
+      is_binary_file
       is_local_pkg_name
       iter_pruned_aggregate_lines
       prune_code_aggregate
+      repomix_packer
       resolve_code_source
       resolve_code_source_dir_path
    
