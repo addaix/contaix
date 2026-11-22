@@ -212,7 +212,8 @@ def _folder_filter(rootdir, keys_filt, *, respect_gitignore, skip_binary):
     def filt(key):
         if not keys_filt(key):
             return False
-        if tracked is not None and key not in tracked:
+        # git prints '/' on every platform; a folder store's keys use os.sep
+        if tracked is not None and key.replace(os.sep, "/") not in tracked:
             return False
         return not (skip_binary and is_binary_file(os.path.join(rootdir, key)))
 

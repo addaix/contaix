@@ -1,11 +1,17 @@
 """code_aggregate's folder walk (addaix/contaix#25): .gitignore, binaries, fences, packers."""
 
+import os
 import shutil
 import subprocess
 
 import pytest
 
 from contaix.code import code_aggregate, fenced_item, packers, resolve_code_source
+
+
+def _keys(store):
+    """The store's keys with '/' separators, as on every platform."""
+    return {k.replace(os.sep, "/") for k in store}
 
 
 @pytest.fixture
@@ -25,13 +31,13 @@ def repo(tmp_path):
 
 
 def test_gitignored_and_binary_files_never_enter(repo):
-    keys = set(resolve_code_source(str(repo), keys_filt=lambda k: True))
+    keys = _keys(resolve_code_source(str(repo), keys_filt=lambda k: True))
     assert {"pkg/mod.py", "pkg/app.ts"} <= keys
     assert not {"build/gen.py", "debug.log", "logo.py"} & keys
 
 
 def test_the_old_walk_is_one_argument_away(repo):
-    keys = set(
+    keys = _keys(
         resolve_code_source(
             str(repo), keys_filt=r"\.py$", respect_gitignore=False, skip_binary=False
         )
@@ -46,6 +52,7 @@ def test_a_folder_outside_git_is_walked_as_before(tmp_path):
 
 def test_each_file_is_fenced_in_its_language(repo):
     out = code_aggregate(str(repo), keys_filt=r"\.(py|ts)$", include_readme=None)
+    out = out.replace(os.sep, "/") if os.sep != "/" else out
     assert "## pkg/mod.py\n\n```python\n" in out
     assert "## pkg/app.ts\n\n```typescript\n" in out
 
@@ -92,3 +99,13 @@ def test_repomix_runs_the_pinned_release_with_markdown_on_stdout(repo, monkeypat
 def test_a_packer_refuses_a_mapping():
     with pytest.raises(TypeError):
         code_aggregate({"a.py": "x"}, packer=lambda d: d)
+
+
+def test_windows_keys_are_matched_against_gits_forward_slashes(repo, monkeypatch):
+    import contaix.code as code
+
+    keep = code._folder_filter(
+        str(repo), lambda k: True, respect_gitignore=True, skip_binary=False
+    )
+    monkeypatch.setattr(code.os, "sep", "\\")
+    assert keep("pkg\\mod.py") and not keep("build\\gen.py")
