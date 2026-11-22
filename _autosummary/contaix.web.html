@@ -207,6 +207,7 @@
 <li class="toctree-l2 current has-children"><a class="reference internal" href="contaix.html">contaix</a><input aria-label="Toggle navigation of contaix" checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="contaix.aggregation.html">contaix.aggregation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="contaix.code.html">contaix.code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contaix.htmlmd.html">contaix.htmlmd</a></li>
 <li class="toctree-l3"><a class="reference internal" href="contaix.markdown.html">contaix.markdown</a></li>
 <li class="toctree-l3"><a class="reference internal" href="contaix.skills.html">contaix.skills</a></li>
 <li class="toctree-l3"><a class="reference internal" href="contaix.urls.html">contaix.urls</a></li>
@@ -299,25 +300,22 @@ fetch_page(url)        # Fetch a single page’s HTML with optional caching</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#contaix.web.find_llms_full_url" title="contaix.web.find_llms_full_url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_llms_full_url</span></code></a>(url, *[, timeout])</p></td>
 <td><p>Probe for a publisher-provided single-doc bundle.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#contaix.web.html_to_clean_markdown" title="contaix.web.html_to_clean_markdown"><code class="xref py py-obj docutils literal notranslate"><span class="pre">html_to_clean_markdown</span></code></a>(html, *[, ...])</p></td>
-<td><p>Convert HTML to clean markdown (via <code class="docutils literal notranslate"><span class="pre">markdownify</span></code>, MIT-licensed).</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#contaix.web.is_nextjs_site" title="contaix.web.is_nextjs_site"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_nextjs_site</span></code></a>(html)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#contaix.web.is_nextjs_site" title="contaix.web.is_nextjs_site"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_nextjs_site</span></code></a>(html)</p></td>
 <td><p>Detect if a page is served by Next.js (App Router).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#contaix.web.list_site_pages" title="contaix.web.list_site_pages"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_site_pages</span></code></a>(url)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#contaix.web.list_site_pages" title="contaix.web.list_site_pages"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_site_pages</span></code></a>(url)</p></td>
 <td><p>List all pages found in a documentation site's navigation.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#contaix.web.parse_rsc_flight" title="contaix.web.parse_rsc_flight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_rsc_flight</span></code></a>(rsc_text)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#contaix.web.parse_rsc_flight" title="contaix.web.parse_rsc_flight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_rsc_flight</span></code></a>(rsc_text)</p></td>
 <td><p>Parse RSC flight data into a dict mapping keys to parsed JSON data.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#contaix.web.rsc_tree_to_markdown" title="contaix.web.rsc_tree_to_markdown"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rsc_tree_to_markdown</span></code></a>(node, *[, _registry, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#contaix.web.rsc_tree_to_markdown" title="contaix.web.rsc_tree_to_markdown"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rsc_tree_to_markdown</span></code></a>(node, *[, _registry, ...])</p></td>
 <td><p>Recursively extract markdown from a React Server Component tree node.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#contaix.web.site_to_markdown" title="contaix.web.site_to_markdown"><code class="xref py py-obj docutils literal notranslate"><span class="pre">site_to_markdown</span></code></a>(url, *[, cache_dir, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#contaix.web.site_to_markdown" title="contaix.web.site_to_markdown"><code class="xref py py-obj docutils literal notranslate"><span class="pre">site_to_markdown</span></code></a>(url, *[, cache_dir, ...])</p></td>
 <td><p>Download a documentation site and produce a single aggregated markdown.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#contaix.web.url_to_cache_key" title="contaix.web.url_to_cache_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">url_to_cache_key</span></code></a>(url)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#contaix.web.url_to_cache_key" title="contaix.web.url_to_cache_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">url_to_cache_key</span></code></a>(url)</p></td>
 <td><p>Convert a URL to a filesystem-safe cache key.</p></td>
 </tr>
 </tbody>
@@ -472,38 +470,6 @@ scraping page-by-page.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="contaix.web.html_to_clean_markdown">
-<span class="sig-prename descclassname"><span class="pre">contaix.web.</span></span><span class="sig-name descname"><span class="pre">html_to_clean_markdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">html</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">body_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_images</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_links</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">markdownify_options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/contaix/web.html#html_to_clean_markdown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#contaix.web.html_to_clean_markdown" title="Link to this definition">¶</a></dt>
-<dd><p>Convert HTML to clean markdown (via <code class="docutils literal notranslate"><span class="pre">markdownify</span></code>, MIT-licensed).</p>
-<p>A thin wrapper over <code class="xref py py-func docutils literal notranslate"><span class="pre">scraped.html_markdown.html_to_markdown_str()</span></code> (with the
-<code class="docutils literal notranslate"><span class="pre">lxml</span></code> parser and no trailing newline), which owns the cleaning passes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>html</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Raw HTML content.</p></li>
-<li><p><strong>body_width</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Kept for backward compatibility. Only <code class="docutils literal notranslate"><span class="pre">0</span></code> (no wrapping, the default)
-is supported; any other value raises <code class="docutils literal notranslate"><span class="pre">ValueError</span></code>.</p></li>
-<li><p><strong>ignore_images</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to skip image tags.</p></li>
-<li><p><strong>include_links</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to include hyperlinks in output (<code class="docutils literal notranslate"><span class="pre">False</span></code> keeps the link text only).</p></li>
-<li><p><strong>**markdownify_options</strong> – Options for <code class="docutils literal notranslate"><span class="pre">markdownify.MarkdownConverter</span></code>, overriding
-<code class="xref py py-data docutils literal notranslate"><span class="pre">HTML_TO_MARKDOWN_DEFAULTS</span></code>. Unknown names raise <code class="docutils literal notranslate"><span class="pre">TypeError</span></code>
-(<code class="docutils literal notranslate"><span class="pre">MarkdownConverter</span></code> would silently ignore them), in particular the
-<code class="docutils literal notranslate"><span class="pre">html2text</span></code> options this function accepted before (<code class="docutils literal notranslate"><span class="pre">ignore_links</span></code>,
-<code class="docutils literal notranslate"><span class="pre">unicode_snob</span></code>, …).</p></li>
-<li><p><strong>href='u'&gt;c&lt;/a&gt;&lt;/p&gt;&quot;</strong><strong>)</strong> (<em>&gt;&gt;&gt; html_to_clean_markdown</em><em>(</em><em>&quot;&lt;h1&gt;Hi&lt;/h1&gt;&lt;p&gt;a &lt;b&gt;b&lt;/b&gt; &lt;a</em>)</p></li>
-<li><p><strong>[</strong><strong>c</strong><strong>]</strong><strong>(</strong><strong>u</strong><strong>)</strong><strong>'</strong> (<em>'# Hinna b</em>)</p></li>
-<li><p><strong>href='u'&gt;c&lt;/a&gt;&lt;/p&gt;&quot;</strong> (<em>&gt;&gt;&gt; html_to_clean_markdown</em><em>(</em><em>&quot;&lt;p&gt;a &lt;a</em>)</p></li>
-<li><p><strong>include_links=False</strong><strong>)</strong></p></li>
-<li><p><strong>c'</strong> (<em>'a</em>)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -693,7 +659,6 @@ Otherwise, returns the output file path.</p>
 <li><a class="reference internal" href="#contaix.web.fetch_page"><code class="docutils literal notranslate"><span class="pre">fetch_page()</span></code></a></li>
 <li><a class="reference internal" href="#contaix.web.fetch_pages"><code class="docutils literal notranslate"><span class="pre">fetch_pages()</span></code></a></li>
 <li><a class="reference internal" href="#contaix.web.find_llms_full_url"><code class="docutils literal notranslate"><span class="pre">find_llms_full_url()</span></code></a></li>
-<li><a class="reference internal" href="#contaix.web.html_to_clean_markdown"><code class="docutils literal notranslate"><span class="pre">html_to_clean_markdown()</span></code></a></li>
 <li><a class="reference internal" href="#contaix.web.is_nextjs_site"><code class="docutils literal notranslate"><span class="pre">is_nextjs_site()</span></code></a></li>
 <li><a class="reference internal" href="#contaix.web.list_site_pages"><code class="docutils literal notranslate"><span class="pre">list_site_pages()</span></code></a></li>
 <li><a class="reference internal" href="#contaix.web.parse_rsc_flight"><code class="docutils literal notranslate"><span class="pre">parse_rsc_flight()</span></code></a></li>

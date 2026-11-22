@@ -1,4 +1,4 @@
-> built 2026-11-21 15:23 UTC from 76984a9 (main) · contaix 0.0.28. Details: build_info.json
+> built 2026-11-22 14:22 UTC from 9e9cf93 (main) · contaix 0.0.28. Details: build_info.json
 
 # index.html.md
 
@@ -513,14 +513,99 @@ Make an md file with all the code in a directory:
 
 ### Modules
 
-| [`aggregation`](_autosummary/contaix.aggregation.html.md#module-contaix.aggregation)   | Tools for aggregating contexts                              |
-|-------------------------------------------------------------------------------------------|-------------------------------------------------------------|
-| [`code`](_autosummary/contaix.code.html.md#module-contaix.code)                 | Tools to make AI contexts from code bases                   |
-| [`markdown`](_autosummary/contaix.markdown.html.md#module-contaix.markdown)         | Converting things to markdown                               |
-| [`skills`](_autosummary/contaix.skills.html.md#module-contaix.skills)             | Skill discovery and installation for the contaix ecosystem. |
-| [`urls`](_autosummary/contaix.urls.html.md#module-contaix.urls)                 | Work with urls                                              |
-| [`util`](_autosummary/contaix.util.html.md#module-contaix.util)                 | General utilities for contaix                               |
-| [`web`](_autosummary/contaix.web.html.md#module-contaix.web)                   | Web content extraction and aggregation tools.               |
+| [`aggregation`](_autosummary/contaix.aggregation.html.md#module-contaix.aggregation)   | Tools for aggregating contexts                                                         |
+|-------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
+| [`code`](_autosummary/contaix.code.html.md#module-contaix.code)                 | Tools to make AI contexts from code bases                                              |
+| [`htmlmd`](_autosummary/contaix.htmlmd.html.md#module-contaix.htmlmd)             | Light html -> markdown: no web-scraping stack, optional sanitising for untrusted html. |
+| [`markdown`](_autosummary/contaix.markdown.html.md#module-contaix.markdown)         | Converting things to markdown                                                          |
+| [`skills`](_autosummary/contaix.skills.html.md#module-contaix.skills)             | Skill discovery and installation for the contaix ecosystem.                            |
+| [`urls`](_autosummary/contaix.urls.html.md#module-contaix.urls)                 | Work with urls                                                                         |
+| [`util`](_autosummary/contaix.util.html.md#module-contaix.util)                 | General utilities for contaix                                                          |
+| [`web`](_autosummary/contaix.web.html.md#module-contaix.web)                   | Web content extraction and aggregation tools.                                          |
+
+
+# _autosummary/contaix.htmlmd.html.md
+
+# contaix.htmlmd
+
+Light html -> markdown: no web-scraping stack, optional sanitising for untrusted html.
+
+`import contaix.htmlmd` costs only `scraped.html_markdown` (`markdownify` and
+`bs4`): no pandas, numpy, requests or notebook tooling. [`contaix.web`](_autosummary/contaix.web.html.md#module-contaix.web) re-exports
+[`html_to_clean_markdown()`](_autosummary/contaix.htmlmd.html.md#contaix.htmlmd.html_to_clean_markdown), so existing imports keep working.
+
+```pycon
+>>> html_to_clean_markdown("<h1>Hi</h1><p>a <b>b</b></p>")
+'# Hi\n\na **b**'
+```
+
+For html you do not trust, `sanitize=True` keeps only structure and words:
+
+```pycon
+>>> html_to_clean_markdown('<p onclick="x()">a</p><script>x()</script>', sanitize=True)
+'a'
+```
+
+### Functions
+
+| [`html_to_clean_markdown`](_autosummary/contaix.htmlmd.html.md#contaix.htmlmd.html_to_clean_markdown)(html, \*[, ...])     | Convert HTML to clean markdown (via `markdownify`, MIT-licensed).                  |
+|----------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
+| [`sanitize_html`](_autosummary/contaix.htmlmd.html.md#contaix.htmlmd.sanitize_html)(text, \*[, rewrite_src, ...]) | The content of an html page as a safe fragment: structure and words, nothing live. |
+
+### contaix.htmlmd.html_to_clean_markdown(html, , body_width=0, ignore_images=True, include_links=True, sanitize=False, \*\*markdownify_options)
+
+Convert HTML to clean markdown (via `markdownify`, MIT-licensed).
+
+A thin wrapper over `scraped.html_markdown.html_to_markdown_str()` (with the
+`lxml` parser and no trailing newline), which owns the cleaning passes.
+
+* **Parameters:**
+  * **html** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – Raw HTML content.
+  * **body_width** ([`int`](https://docs.python.org/3/builtins/functions.html#int)) – Kept for backward compatibility. Only `0` (no wrapping, the default)
+    is supported; any other value raises `ValueError`.
+  * **ignore_images** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Whether to skip image tags.
+  * **include_links** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Whether to include hyperlinks in output (`False` keeps the link text only).
+  * **sanitize** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Pass the html through [`sanitize_html()`](_autosummary/contaix.htmlmd.html.md#contaix.htmlmd.sanitize_html) first: use it for untrusted html.
+    Remote images become their alt text, and only `http(s)`/`mailto` links stay.
+  * **\*\*markdownify_options** – Options for `markdownify.MarkdownConverter`, overriding
+    `HTML_TO_MARKDOWN_DEFAULTS`. Unknown names raise `TypeError`
+    (`MarkdownConverter` would silently ignore them), in particular the
+    `html2text` options this function accepted before (`ignore_links`,
+    `unicode_snob`, …).
+  * **href='u'>c</a></p>"****)** ( *>>> html_to_clean_markdown* *(* *"<h1>Hi</h1><p>a <b>b</b> <a*)
+  * **[****c****]****(****u****)****'** ( *'# Hinna b*)
+  * **href='u'>c</a></p>"** ( *>>> html_to_clean_markdown* *(* *"<p>a <a*)
+  * **include_links=False****)**
+  * **c'** ( *'a*)
+  * **href='javascript** ( *>>> html_to_clean_markdown* *(* *"<p>a <a*)
+  * **c'**
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+### contaix.htmlmd.sanitize_html(text, \*, rewrite_src=<function <lambda>>, rewrite_href=None, max_depth=100, max_span=100)
+
+The content of an html page as a safe fragment: structure and words, nothing live.
+
+Only `ALLOWED_TAGS` survive, with a few plain attributes (`KEEP_ATTRS`):
+no script, style, frame, form, event handler, `class` or `id`. A link keeps only an
+`http(s)` or `mailto` address, which `rewrite_href(href)`, when given, may change
+or refuse (`None`: the link keeps its words and loses its address).
+`rewrite_src(src)` decides each image: the url to show it from, or `None` for its alt
+text instead (by default every remote image becomes its alt text). Nesting deeper than
+`max_depth` is unwrapped, spans are capped at `max_span`, and unbalanced tags are
+closed so the fragment can never swallow what is joined after it.
+
+```pycon
+>>> sanitize_html('<body><script>x()</script><h1 onclick="x()">Hi</h1><a href="javascript:x()">y</a></body>')
+'<h1>Hi</h1><a>y</a>'
+>>> sanitize_html("<div><p>unclosed")
+'<div><p>unclosed</p></div>'
+>>> sanitize_html('<img src="http://e/x.png" alt="a cat">')
+'a cat'
+```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 
 # _autosummary/contaix.markdown.html.md
@@ -955,7 +1040,6 @@ Example:
 | [`fetch_page`](_autosummary/contaix.web.html.md#contaix.web.fetch_page)(url, \*[, cache_dir, force, timeout])   | Fetch a page's HTML content, with optional disk caching.                |
 | [`fetch_pages`](_autosummary/contaix.web.html.md#contaix.web.fetch_pages)(urls, \*[, cache_dir, force, verbose]) | Fetch multiple pages with caching.                                      |
 | [`find_llms_full_url`](_autosummary/contaix.web.html.md#contaix.web.find_llms_full_url)(url, \*[, timeout])             | Probe for a publisher-provided single-doc bundle.                       |
-| [`html_to_clean_markdown`](_autosummary/contaix.web.html.md#contaix.web.html_to_clean_markdown)(html, \*[, ...])            | Convert HTML to clean markdown (via `markdownify`, MIT-licensed).       |
 | [`is_nextjs_site`](_autosummary/contaix.web.html.md#contaix.web.is_nextjs_site)(html)                               | Detect if a page is served by Next.js (App Router).                     |
 | [`list_site_pages`](_autosummary/contaix.web.html.md#contaix.web.list_site_pages)(url)                               | List all pages found in a documentation site's navigation.              |
 | [`parse_rsc_flight`](_autosummary/contaix.web.html.md#contaix.web.parse_rsc_flight)(rsc_text)                         | Parse RSC flight data into a dict mapping keys to parsed JSON data.     |
@@ -1074,32 +1158,6 @@ Tries, in order:
 * **Return type:**
   [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
-### contaix.web.html_to_clean_markdown(html, , body_width=0, ignore_images=True, include_links=True, \*\*markdownify_options)
-
-Convert HTML to clean markdown (via `markdownify`, MIT-licensed).
-
-A thin wrapper over `scraped.html_markdown.html_to_markdown_str()` (with the
-`lxml` parser and no trailing newline), which owns the cleaning passes.
-
-* **Parameters:**
-  * **html** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – Raw HTML content.
-  * **body_width** ([`int`](https://docs.python.org/3/builtins/functions.html#int)) – Kept for backward compatibility. Only `0` (no wrapping, the default)
-    is supported; any other value raises `ValueError`.
-  * **ignore_images** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Whether to skip image tags.
-  * **include_links** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Whether to include hyperlinks in output (`False` keeps the link text only).
-  * **\*\*markdownify_options** – Options for `markdownify.MarkdownConverter`, overriding
-    `HTML_TO_MARKDOWN_DEFAULTS`. Unknown names raise `TypeError`
-    (`MarkdownConverter` would silently ignore them), in particular the
-    `html2text` options this function accepted before (`ignore_links`,
-    `unicode_snob`, …).
-  * **href='u'>c</a></p>"****)** ( *>>> html_to_clean_markdown* *(* *"<h1>Hi</h1><p>a <b>b</b> <a*)
-  * **[****c****]****(****u****)****'** ( *'# Hinna b*)
-  * **href='u'>c</a></p>"** ( *>>> html_to_clean_markdown* *(* *"<p>a <a*)
-  * **include_links=False****)**
-  * **c'** ( *'a*)
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
-
 ### contaix.web.is_nextjs_site(html)
 
 Detect if a page is served by Next.js (App Router).
@@ -1208,16 +1266,18 @@ Convert a URL to a filesystem-safe cache key.
 
 # About this build
 
-This documentation was built on **2026-11-21 15:23 UTC** from commit <a href="https://github.com/addaix/contaix/commit/76984a9702b42af33008e11dd1cedfd7e5f19b23"><code>76984a9</code></a> on branch <code>main</code>, for **contaix 0.0.28** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-22 14:22 UTC** from commit <a href="https://github.com/addaix/contaix/commit/9e9cf936247fe4191d38965c9140fe9de16fed89"><code>9e9cf93</code></a> on branch <code>main</code>, for **contaix 0.0.28** (from <code>pyproject.toml</code>).
 
-#### NOTE
-Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
+#### WARNING
+The documentation and the package may be misaligned:
+
+- The documented version (0.0.28) is behind the latest release on PyPI (0.0.29): `pip install contaix` gives newer code than these docs describe.
 
 ## Source
 
 |                     |                                                                                                                                                       |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/addaix/contaix/commit/76984a9702b42af33008e11dd1cedfd7e5f19b23"><code>76984a9702b42af33008e11dd1cedfd7e5f19b23</code></a> |
+| Commit              | <a href="https://github.com/addaix/contaix/commit/9e9cf936247fe4191d38965c9140fe9de16fed89"><code>9e9cf936247fe4191d38965c9140fe9de16fed89</code></a> |
 | Branch              | <code>main</code>                                                                                                                                     |
 | Tags at this commit | none                                                                                                                                                  |
 | Working tree        | clean                                                                                                                                                 |
@@ -1228,15 +1288,15 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>addaix/contaix</code>                                                                |
-| Run          | <a href="https://github.com/addaix/contaix/actions/runs/44918793969">44918793969</a>       |
+| Run          | <a href="https://github.com/addaix/contaix/actions/runs/45032255504">45032255504</a>       |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>76984a9702b42af33008e11dd1cedfd7e5f19b23</code> (in the history of the built commit) |
+| Event commit | <code>9e9cf936247fe4191d38965c9140fe9de16fed89</code> (in the history of the built commit) |
 
 ## Tools
 
 |          |         |
 |----------|---------|
-| epythet  | 0.2.22  |
+| epythet  | 0.2.23  |
 | Sphinx   | 9.1.1   |
 | docutils | 0.22.4  |
 | Python   | 3.12.16 |
@@ -1255,14 +1315,14 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/contaix/0.0.28/">0.0.28</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/contaix/0.0.29/">0.0.29</a>, newer than the documented version (0.0.28).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/addaix/contaix && cd contaix
-git checkout 76984a9702b42af33008e11dd1cedfd7e5f19b23
-pip install "epythet==0.2.22"
+git checkout 9e9cf936247fe4191d38965c9140fe9de16fed89
+pip install "epythet==0.2.23"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
 

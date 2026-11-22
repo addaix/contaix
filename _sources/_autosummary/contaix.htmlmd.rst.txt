@@ -1,0 +1,13 @@
+contaix.htmlmd
+==============
+
+.. automodule:: contaix.htmlmd
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      html_to_clean_markdown
+      sanitize_html
+   

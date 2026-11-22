@@ -204,6 +204,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../_autosummary/contaix.html">contaix</a><input aria-label="Toggle navigation of contaix" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/contaix.aggregation.html">contaix.aggregation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/contaix.code.html">contaix.code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/contaix.htmlmd.html">contaix.htmlmd</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/contaix.markdown.html">contaix.markdown</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/contaix.skills.html">contaix.skills</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/contaix.urls.html">contaix.urls</a></li>
@@ -279,6 +280,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">contaix.htmlmd</span><span class="w"> </span><span class="kn">import</span> <span class="n">html_to_clean_markdown</span>  <span class="c1"># noqa: F401 (re-exported)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scraped.html_markdown</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>  <span class="c1"># noqa: F401 (re-exported)</span>
     <span class="n">DEEP_HTML_RECURSION_LIMIT</span><span class="p">,</span>
     <span class="n">DEEP_HTML_THREAD_STACK_BYTES</span><span class="p">,</span>
@@ -655,62 +657,8 @@
 <span class="c1"># ---------------------------------------------------------------------------</span>
 
 
-<span class="c1"># The conversion, its cleaning passes and the markdownify defaults live in</span>
-<span class="c1"># ``scraped.html_markdown`` (one source of truth for both converters); contaix only</span>
-<span class="c1"># keeps its historical signature on top.</span>
-
-
-<div class="viewcode-block" id="html_to_clean_markdown">
-<a class="viewcode-back" href="../../_autosummary/contaix.web.html#contaix.web.html_to_clean_markdown">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">html_to_clean_markdown</span><span class="p">(</span>
-    <span class="n">html</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">body_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">ignore_images</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">include_links</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">markdownify_options</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Convert HTML to clean markdown (via ``markdownify``, MIT-licensed).</span>
-
-<span class="sd">    A thin wrapper over :func:`scraped.html_markdown.html_to_markdown_str` (with the</span>
-<span class="sd">    ``lxml`` parser and no trailing newline), which owns the cleaning passes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    html : str</span>
-<span class="sd">        Raw HTML content.</span>
-<span class="sd">    body_width : int</span>
-<span class="sd">        Kept for backward compatibility. Only ``0`` (no wrapping, the default)</span>
-<span class="sd">        is supported; any other value raises ``ValueError``.</span>
-<span class="sd">    ignore_images : bool</span>
-<span class="sd">        Whether to skip image tags.</span>
-<span class="sd">    include_links : bool</span>
-<span class="sd">        Whether to include hyperlinks in output (``False`` keeps the link text only).</span>
-<span class="sd">    **markdownify_options</span>
-<span class="sd">        Options for ``markdownify.MarkdownConverter``, overriding</span>
-<span class="sd">        :data:`HTML_TO_MARKDOWN_DEFAULTS`. Unknown names raise ``TypeError``</span>
-<span class="sd">        (``MarkdownConverter`` would silently ignore them), in particular the</span>
-<span class="sd">        ``html2text`` options this function accepted before (``ignore_links``,</span>
-<span class="sd">        ``unicode_snob``, ...).</span>
-
-<span class="sd">    &gt;&gt;&gt; html_to_clean_markdown("&lt;h1&gt;Hi&lt;/h1&gt;&lt;p&gt;a &lt;b&gt;b&lt;/b&gt; &lt;a href='u'&gt;c&lt;/a&gt;&lt;/p&gt;")</span>
-<span class="sd">    '# Hi\\n\\na **b** [c](u)'</span>
-<span class="sd">    &gt;&gt;&gt; html_to_clean_markdown("&lt;p&gt;a &lt;a href='u'&gt;c&lt;/a&gt;&lt;/p&gt;", include_links=False)</span>
-<span class="sd">    'a c'</span>
-<span class="sd">    """</span>
-    <span class="k">if</span> <span class="n">body_width</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">"body_width is not supported: markdownify never wraps lines. "</span>
-            <span class="s2">"Pass body_width=0 (the default)."</span>
-        <span class="p">)</span>
-    <span class="k">return</span> <span class="n">html_to_markdown_str</span><span class="p">(</span>
-        <span class="n">html</span><span class="p">,</span>
-        <span class="n">ignore_images</span><span class="o">=</span><span class="n">ignore_images</span><span class="p">,</span>
-        <span class="n">include_links</span><span class="o">=</span><span class="n">include_links</span><span class="p">,</span>
-        <span class="n">parser</span><span class="o">=</span><span class="s2">"lxml"</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">markdownify_options</span><span class="p">,</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></div>
-
+<span class="c1"># ``html_to_clean_markdown`` lives in the light :mod:`contaix.htmlmd` (re-exported</span>
+<span class="c1"># above); the cleaning passes and markdownify defaults are in ``scraped.html_markdown``.</span>
 
 
 <span class="c1"># ---------------------------------------------------------------------------</span>

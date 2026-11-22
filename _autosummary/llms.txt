@@ -8,6 +8,7 @@
 - [contaix](contaix.html.md): Tools to make contexts (knowledge bases for AI agents)
 - [contaix.aggregation](contaix.aggregation.html.md): Tools for aggregating contexts
 - [contaix.code](contaix.code.html.md): Tools to make AI contexts from code bases
+- [contaix.htmlmd](contaix.htmlmd.html.md): Light html -&gt; markdown: no web-scraping stack, optional sanitising for untrusted html.
 - [contaix.markdown](contaix.markdown.html.md): Converting things to markdown
 - [contaix.skills](contaix.skills.html.md): Skill discovery and installation for the contaix ecosystem.
 - [contaix.urls](contaix.urls.html.md): Work with urls

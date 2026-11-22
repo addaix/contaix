@@ -31,7 +31,6 @@ Example:
 | [`fetch_page`](#contaix.web.fetch_page)(url, \*[, cache_dir, force, timeout])   | Fetch a page's HTML content, with optional disk caching.                |
 | [`fetch_pages`](#contaix.web.fetch_pages)(urls, \*[, cache_dir, force, verbose]) | Fetch multiple pages with caching.                                      |
 | [`find_llms_full_url`](#contaix.web.find_llms_full_url)(url, \*[, timeout])             | Probe for a publisher-provided single-doc bundle.                       |
-| [`html_to_clean_markdown`](#contaix.web.html_to_clean_markdown)(html, \*[, ...])            | Convert HTML to clean markdown (via `markdownify`, MIT-licensed).       |
 | [`is_nextjs_site`](#contaix.web.is_nextjs_site)(html)                               | Detect if a page is served by Next.js (App Router).                     |
 | [`list_site_pages`](#contaix.web.list_site_pages)(url)                               | List all pages found in a documentation site's navigation.              |
 | [`parse_rsc_flight`](#contaix.web.parse_rsc_flight)(rsc_text)                         | Parse RSC flight data into a dict mapping keys to parsed JSON data.     |
@@ -149,32 +148,6 @@ Tries, in order:
   `None` if none of the candidates exist.
 * **Return type:**
   [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
-
-### contaix.web.html_to_clean_markdown(html, , body_width=0, ignore_images=True, include_links=True, \*\*markdownify_options)
-
-Convert HTML to clean markdown (via `markdownify`, MIT-licensed).
-
-A thin wrapper over `scraped.html_markdown.html_to_markdown_str()` (with the
-`lxml` parser and no trailing newline), which owns the cleaning passes.
-
-* **Parameters:**
-  * **html** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – Raw HTML content.
-  * **body_width** ([`int`](https://docs.python.org/3/builtins/functions.html#int)) – Kept for backward compatibility. Only `0` (no wrapping, the default)
-    is supported; any other value raises `ValueError`.
-  * **ignore_images** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Whether to skip image tags.
-  * **include_links** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Whether to include hyperlinks in output (`False` keeps the link text only).
-  * **\*\*markdownify_options** – Options for `markdownify.MarkdownConverter`, overriding
-    `HTML_TO_MARKDOWN_DEFAULTS`. Unknown names raise `TypeError`
-    (`MarkdownConverter` would silently ignore them), in particular the
-    `html2text` options this function accepted before (`ignore_links`,
-    `unicode_snob`, …).
-  * **href='u'>c</a></p>"****)** ( *>>> html_to_clean_markdown* *(* *"<h1>Hi</h1><p>a <b>b</b> <a*)
-  * **[****c****]****(****u****)****'** ( *'# Hinna b*)
-  * **href='u'>c</a></p>"** ( *>>> html_to_clean_markdown* *(* *"<p>a <a*)
-  * **include_links=False****)**
-  * **c'** ( *'a*)
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ### contaix.web.is_nextjs_site(html)
 

@@ -12,6 +12,7 @@
 
    aggregation
    code
+   htmlmd
    markdown
    skills
    urls
