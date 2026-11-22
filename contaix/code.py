@@ -170,8 +170,16 @@ def git_tracked_files(rootdir: str) -> Optional[frozenset]:
 
     try:
         done = subprocess.run(
-            ["git", "-C", rootdir, "ls-files", "-z", "--cached", "--others",
-             "--exclude-standard"],
+            [
+                "git",
+                "-C",
+                rootdir,
+                "ls-files",
+                "-z",
+                "--cached",
+                "--others",
+                "--exclude-standard",
+            ],
             capture_output=True,
             timeout=60,
         )
@@ -495,15 +503,41 @@ def _readme_first_chainmap(code_store: Mapping, readme_content: str) -> Mapping:
 #: Code-fence language by file extension (the name GitHub's renderer knows); anything
 #: else gets a bare fence.
 FENCE_LANGUAGES = {
-    ".py": "python", ".pyi": "python", ".ipynb": "json",
-    ".js": "javascript", ".mjs": "javascript", ".cjs": "javascript", ".jsx": "jsx",
-    ".ts": "typescript", ".tsx": "tsx", ".json": "json",
-    ".md": "markdown", ".rst": "rst", ".txt": "text",
-    ".toml": "toml", ".yaml": "yaml", ".yml": "yaml", ".cfg": "ini", ".ini": "ini",
-    ".html": "html", ".css": "css", ".scss": "scss", ".sql": "sql",
-    ".sh": "bash", ".bash": "bash", ".zsh": "bash",
-    ".rs": "rust", ".go": "go", ".java": "java", ".c": "c", ".h": "c",
-    ".cpp": "cpp", ".hpp": "cpp", ".rb": "ruby", ".swift": "swift", ".kt": "kotlin",
+    ".py": "python",
+    ".pyi": "python",
+    ".ipynb": "json",
+    ".js": "javascript",
+    ".mjs": "javascript",
+    ".cjs": "javascript",
+    ".jsx": "jsx",
+    ".ts": "typescript",
+    ".tsx": "tsx",
+    ".json": "json",
+    ".md": "markdown",
+    ".rst": "rst",
+    ".txt": "text",
+    ".toml": "toml",
+    ".yaml": "yaml",
+    ".yml": "yaml",
+    ".cfg": "ini",
+    ".ini": "ini",
+    ".html": "html",
+    ".css": "css",
+    ".scss": "scss",
+    ".sql": "sql",
+    ".sh": "bash",
+    ".bash": "bash",
+    ".zsh": "bash",
+    ".rs": "rust",
+    ".go": "go",
+    ".java": "java",
+    ".c": "c",
+    ".h": "c",
+    ".cpp": "cpp",
+    ".hpp": "cpp",
+    ".rb": "ruby",
+    ".swift": "swift",
+    ".kt": "kotlin",
 }
 
 
@@ -550,8 +584,16 @@ def repomix_packer(rootdir: str, *, compress: bool = False) -> str:
             "packer='repomix' needs Node's npx on PATH (https://nodejs.org/); "
             "the default packer needs nothing"
         )
-    argv = [npx, "-y", REPOMIX_SPEC, rootdir, "--style", "markdown", "--stdout",
-            "--quiet"]
+    argv = [
+        npx,
+        "-y",
+        REPOMIX_SPEC,
+        rootdir,
+        "--style",
+        "markdown",
+        "--stdout",
+        "--quiet",
+    ]
     if compress:
         argv.append("--compress")
     done = subprocess.run(argv, capture_output=True, text=True)
