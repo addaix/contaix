@@ -356,6 +356,14 @@ page (with caching), and aggregating.</p>
 </div>
 <p>Markdown conversion is delegated to <a class="reference external" href="https://github.com/thorwhalen/dn"><code class="docutils literal notranslate"><span class="pre">dn.src</span></code></a>
 and supports PDF, DOCX, XLSX, PPTX, HTML, IPYNB, and more.</p>
+<p>PDFs convert to flat text under <code class="docutils literal notranslate"><span class="pre">###</span> <span class="pre">Page</span> <span class="pre">N</span></code> headers by default: fast and light. When the tables and section headings matter, pass Docling as the PDF converter (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">'dn[docling]'</span></code>; it installs torch and downloads models on first use, and is 50 to 200 times slower):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dn.docling_pdf</span><span class="w"> </span><span class="kn">import</span> <span class="n">docling_converters</span>
+
+<span class="n">md</span> <span class="o">=</span> <span class="n">bytes_to_markdown</span><span class="p">(</span><span class="n">pdf_bytes</span><span class="p">,</span> <span class="n">input_format</span><span class="o">=</span><span class="s2">"pdf"</span><span class="p">,</span> <span class="n">converters</span><span class="o">=</span><span class="n">docling_converters</span><span class="p">())</span>
+<span class="n">bytes_store_to_markdown_store</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">converters</span><span class="o">=</span><span class="n">docling_converters</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>markitdown was weighed for the same job and not adopted: it was no better than <code class="docutils literal notranslate"><span class="pre">dn</span></code> on these formats and turned two-column PDF prose into false tables.</p>
 </section>
 <section id="cleanup-of-messy-markdown-e-g-chatgpt-exports">
 <span id="cleanup-of-messy-markdown-eg-chatgpt-exports"></span><h3>Cleanup of messy markdown (e.g. ChatGPT exports)<a class="headerlink" href="#cleanup-of-messy-markdown-e-g-chatgpt-exports" title="Link to this heading">¶</a></h3>
@@ -438,7 +446,7 @@ format conversion</p></li>
 </section>
 </section>
 
-<p class="epythet-provenance" style="font-size:.8em;opacity:.65;margin-top:2.5em;text-align:right">built 2026-11-22 18:46 UTC from <a href="https://github.com/addaix/contaix/commit/0e4701316e7701b5de8012c9a8c2536dc438983a">0e47013</a> (main) · contaix 0.0.29 · <a href="about-this-build.html">about this build</a></p>
+<p class="epythet-provenance" style="font-size:.8em;opacity:.65;margin-top:2.5em;text-align:right">built 2026-11-22 18:58 UTC from <a href="https://github.com/addaix/contaix/commit/b9ac8ddf7d52fe002fa2a4ba16274ca509c2cf4e">b9ac8dd</a> (main) · contaix 0.0.30 · <a href="about-this-build.html">about this build</a></p>
         </article>
       </div>
       <footer>
@@ -505,7 +513,7 @@ format conversion</p></li>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=9f547d6f"></script>
+</div><script src="_static/documentation_options.js?v=d8383de7"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

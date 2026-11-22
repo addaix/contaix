@@ -1,4 +1,4 @@
-> built 2026-11-22 18:46 UTC from 0e47013 (main) · contaix 0.0.29. Details: build_info.json
+> built 2026-11-22 18:58 UTC from b9ac8dd (main) · contaix 0.0.30. Details: build_info.json
 
 # index.html.md
 
@@ -97,6 +97,17 @@ bytes_store_to_markdown_store(src, target)
 
 Markdown conversion is delegated to [`dn.src`](https://github.com/thorwhalen/dn)
 and supports PDF, DOCX, XLSX, PPTX, HTML, IPYNB, and more.
+
+PDFs convert to flat text under `### Page N` headers by default: fast and light. When the tables and section headings matter, pass Docling as the PDF converter (`pip install 'dn[docling]'`; it installs torch and downloads models on first use, and is 50 to 200 times slower):
+
+```python
+from dn.docling_pdf import docling_converters
+
+md = bytes_to_markdown(pdf_bytes, input_format="pdf", converters=docling_converters())
+bytes_store_to_markdown_store(src, target, converters=docling_converters())
+```
+
+markitdown was weighed for the same job and not adopted: it was no better than `dn` on these formats and turned two-column PDF prose into false tables.
 
 ### Cleanup of messy markdown (e.g. ChatGPT exports)
 
@@ -1382,18 +1393,18 @@ Convert a URL to a filesystem-safe cache key.
 
 # About this build
 
-This documentation was built on **2026-11-22 18:46 UTC** from commit <a href="https://github.com/addaix/contaix/commit/0e4701316e7701b5de8012c9a8c2536dc438983a"><code>0e47013</code></a> on branch <code>main</code>, for **contaix 0.0.29** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-22 18:58 UTC** from commit <a href="https://github.com/addaix/contaix/commit/b9ac8ddf7d52fe002fa2a4ba16274ca509c2cf4e"><code>b9ac8dd</code></a> on branch <code>main</code>, for **contaix 0.0.30** (from <code>pyproject.toml</code>).
 
 #### WARNING
 The documentation and the package may be misaligned:
 
-- The documented version (0.0.29) is behind the latest release on PyPI (0.0.30): `pip install contaix` gives newer code than these docs describe.
+- The documented version (0.0.30) is behind the latest release on PyPI (0.0.31): `pip install contaix` gives newer code than these docs describe.
 
 ## Source
 
 |                     |                                                                                                                                                       |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/addaix/contaix/commit/0e4701316e7701b5de8012c9a8c2536dc438983a"><code>0e4701316e7701b5de8012c9a8c2536dc438983a</code></a> |
+| Commit              | <a href="https://github.com/addaix/contaix/commit/b9ac8ddf7d52fe002fa2a4ba16274ca509c2cf4e"><code>b9ac8ddf7d52fe002fa2a4ba16274ca509c2cf4e</code></a> |
 | Branch              | <code>main</code>                                                                                                                                     |
 | Tags at this commit | none                                                                                                                                                  |
 | Working tree        | clean                                                                                                                                                 |
@@ -1404,9 +1415,9 @@ The documentation and the package may be misaligned:
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>addaix/contaix</code>                                                                |
-| Run          | <a href="https://github.com/addaix/contaix/actions/runs/45056662808">45056662808</a>       |
+| Run          | <a href="https://github.com/addaix/contaix/actions/runs/45057833468">45057833468</a>       |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>0e4701316e7701b5de8012c9a8c2536dc438983a</code> (in the history of the built commit) |
+| Event commit | <code>b9ac8ddf7d52fe002fa2a4ba16274ca509c2cf4e</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -1431,13 +1442,13 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/contaix/0.0.30/">0.0.30</a>, newer than the documented version (0.0.29).
+Latest release: <a href="https://pypi.org/project/contaix/0.0.31/">0.0.31</a>, newer than the documented version (0.0.30).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/addaix/contaix && cd contaix
-git checkout 0e4701316e7701b5de8012c9a8c2536dc438983a
+git checkout b9ac8ddf7d52fe002fa2a4ba16274ca509c2cf4e
 pip install "epythet==0.2.23"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

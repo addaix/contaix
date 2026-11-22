@@ -431,8 +431,16 @@
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">done</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-            <span class="p">[</span><span class="s2">"git"</span><span class="p">,</span> <span class="s2">"-C"</span><span class="p">,</span> <span class="n">rootdir</span><span class="p">,</span> <span class="s2">"ls-files"</span><span class="p">,</span> <span class="s2">"-z"</span><span class="p">,</span> <span class="s2">"--cached"</span><span class="p">,</span> <span class="s2">"--others"</span><span class="p">,</span>
-             <span class="s2">"--exclude-standard"</span><span class="p">],</span>
+            <span class="p">[</span>
+                <span class="s2">"git"</span><span class="p">,</span>
+                <span class="s2">"-C"</span><span class="p">,</span>
+                <span class="n">rootdir</span><span class="p">,</span>
+                <span class="s2">"ls-files"</span><span class="p">,</span>
+                <span class="s2">"-z"</span><span class="p">,</span>
+                <span class="s2">"--cached"</span><span class="p">,</span>
+                <span class="s2">"--others"</span><span class="p">,</span>
+                <span class="s2">"--exclude-standard"</span><span class="p">,</span>
+            <span class="p">],</span>
             <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">timeout</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span>
         <span class="p">)</span>
@@ -766,15 +774,41 @@
 <span class="c1">#: Code-fence language by file extension (the name GitHub's renderer knows); anything</span>
 <span class="c1">#: else gets a bare fence.</span>
 <span class="n">FENCE_LANGUAGES</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">".py"</span><span class="p">:</span> <span class="s2">"python"</span><span class="p">,</span> <span class="s2">".pyi"</span><span class="p">:</span> <span class="s2">"python"</span><span class="p">,</span> <span class="s2">".ipynb"</span><span class="p">:</span> <span class="s2">"json"</span><span class="p">,</span>
-    <span class="s2">".js"</span><span class="p">:</span> <span class="s2">"javascript"</span><span class="p">,</span> <span class="s2">".mjs"</span><span class="p">:</span> <span class="s2">"javascript"</span><span class="p">,</span> <span class="s2">".cjs"</span><span class="p">:</span> <span class="s2">"javascript"</span><span class="p">,</span> <span class="s2">".jsx"</span><span class="p">:</span> <span class="s2">"jsx"</span><span class="p">,</span>
-    <span class="s2">".ts"</span><span class="p">:</span> <span class="s2">"typescript"</span><span class="p">,</span> <span class="s2">".tsx"</span><span class="p">:</span> <span class="s2">"tsx"</span><span class="p">,</span> <span class="s2">".json"</span><span class="p">:</span> <span class="s2">"json"</span><span class="p">,</span>
-    <span class="s2">".md"</span><span class="p">:</span> <span class="s2">"markdown"</span><span class="p">,</span> <span class="s2">".rst"</span><span class="p">:</span> <span class="s2">"rst"</span><span class="p">,</span> <span class="s2">".txt"</span><span class="p">:</span> <span class="s2">"text"</span><span class="p">,</span>
-    <span class="s2">".toml"</span><span class="p">:</span> <span class="s2">"toml"</span><span class="p">,</span> <span class="s2">".yaml"</span><span class="p">:</span> <span class="s2">"yaml"</span><span class="p">,</span> <span class="s2">".yml"</span><span class="p">:</span> <span class="s2">"yaml"</span><span class="p">,</span> <span class="s2">".cfg"</span><span class="p">:</span> <span class="s2">"ini"</span><span class="p">,</span> <span class="s2">".ini"</span><span class="p">:</span> <span class="s2">"ini"</span><span class="p">,</span>
-    <span class="s2">".html"</span><span class="p">:</span> <span class="s2">"html"</span><span class="p">,</span> <span class="s2">".css"</span><span class="p">:</span> <span class="s2">"css"</span><span class="p">,</span> <span class="s2">".scss"</span><span class="p">:</span> <span class="s2">"scss"</span><span class="p">,</span> <span class="s2">".sql"</span><span class="p">:</span> <span class="s2">"sql"</span><span class="p">,</span>
-    <span class="s2">".sh"</span><span class="p">:</span> <span class="s2">"bash"</span><span class="p">,</span> <span class="s2">".bash"</span><span class="p">:</span> <span class="s2">"bash"</span><span class="p">,</span> <span class="s2">".zsh"</span><span class="p">:</span> <span class="s2">"bash"</span><span class="p">,</span>
-    <span class="s2">".rs"</span><span class="p">:</span> <span class="s2">"rust"</span><span class="p">,</span> <span class="s2">".go"</span><span class="p">:</span> <span class="s2">"go"</span><span class="p">,</span> <span class="s2">".java"</span><span class="p">:</span> <span class="s2">"java"</span><span class="p">,</span> <span class="s2">".c"</span><span class="p">:</span> <span class="s2">"c"</span><span class="p">,</span> <span class="s2">".h"</span><span class="p">:</span> <span class="s2">"c"</span><span class="p">,</span>
-    <span class="s2">".cpp"</span><span class="p">:</span> <span class="s2">"cpp"</span><span class="p">,</span> <span class="s2">".hpp"</span><span class="p">:</span> <span class="s2">"cpp"</span><span class="p">,</span> <span class="s2">".rb"</span><span class="p">:</span> <span class="s2">"ruby"</span><span class="p">,</span> <span class="s2">".swift"</span><span class="p">:</span> <span class="s2">"swift"</span><span class="p">,</span> <span class="s2">".kt"</span><span class="p">:</span> <span class="s2">"kotlin"</span><span class="p">,</span>
+    <span class="s2">".py"</span><span class="p">:</span> <span class="s2">"python"</span><span class="p">,</span>
+    <span class="s2">".pyi"</span><span class="p">:</span> <span class="s2">"python"</span><span class="p">,</span>
+    <span class="s2">".ipynb"</span><span class="p">:</span> <span class="s2">"json"</span><span class="p">,</span>
+    <span class="s2">".js"</span><span class="p">:</span> <span class="s2">"javascript"</span><span class="p">,</span>
+    <span class="s2">".mjs"</span><span class="p">:</span> <span class="s2">"javascript"</span><span class="p">,</span>
+    <span class="s2">".cjs"</span><span class="p">:</span> <span class="s2">"javascript"</span><span class="p">,</span>
+    <span class="s2">".jsx"</span><span class="p">:</span> <span class="s2">"jsx"</span><span class="p">,</span>
+    <span class="s2">".ts"</span><span class="p">:</span> <span class="s2">"typescript"</span><span class="p">,</span>
+    <span class="s2">".tsx"</span><span class="p">:</span> <span class="s2">"tsx"</span><span class="p">,</span>
+    <span class="s2">".json"</span><span class="p">:</span> <span class="s2">"json"</span><span class="p">,</span>
+    <span class="s2">".md"</span><span class="p">:</span> <span class="s2">"markdown"</span><span class="p">,</span>
+    <span class="s2">".rst"</span><span class="p">:</span> <span class="s2">"rst"</span><span class="p">,</span>
+    <span class="s2">".txt"</span><span class="p">:</span> <span class="s2">"text"</span><span class="p">,</span>
+    <span class="s2">".toml"</span><span class="p">:</span> <span class="s2">"toml"</span><span class="p">,</span>
+    <span class="s2">".yaml"</span><span class="p">:</span> <span class="s2">"yaml"</span><span class="p">,</span>
+    <span class="s2">".yml"</span><span class="p">:</span> <span class="s2">"yaml"</span><span class="p">,</span>
+    <span class="s2">".cfg"</span><span class="p">:</span> <span class="s2">"ini"</span><span class="p">,</span>
+    <span class="s2">".ini"</span><span class="p">:</span> <span class="s2">"ini"</span><span class="p">,</span>
+    <span class="s2">".html"</span><span class="p">:</span> <span class="s2">"html"</span><span class="p">,</span>
+    <span class="s2">".css"</span><span class="p">:</span> <span class="s2">"css"</span><span class="p">,</span>
+    <span class="s2">".scss"</span><span class="p">:</span> <span class="s2">"scss"</span><span class="p">,</span>
+    <span class="s2">".sql"</span><span class="p">:</span> <span class="s2">"sql"</span><span class="p">,</span>
+    <span class="s2">".sh"</span><span class="p">:</span> <span class="s2">"bash"</span><span class="p">,</span>
+    <span class="s2">".bash"</span><span class="p">:</span> <span class="s2">"bash"</span><span class="p">,</span>
+    <span class="s2">".zsh"</span><span class="p">:</span> <span class="s2">"bash"</span><span class="p">,</span>
+    <span class="s2">".rs"</span><span class="p">:</span> <span class="s2">"rust"</span><span class="p">,</span>
+    <span class="s2">".go"</span><span class="p">:</span> <span class="s2">"go"</span><span class="p">,</span>
+    <span class="s2">".java"</span><span class="p">:</span> <span class="s2">"java"</span><span class="p">,</span>
+    <span class="s2">".c"</span><span class="p">:</span> <span class="s2">"c"</span><span class="p">,</span>
+    <span class="s2">".h"</span><span class="p">:</span> <span class="s2">"c"</span><span class="p">,</span>
+    <span class="s2">".cpp"</span><span class="p">:</span> <span class="s2">"cpp"</span><span class="p">,</span>
+    <span class="s2">".hpp"</span><span class="p">:</span> <span class="s2">"cpp"</span><span class="p">,</span>
+    <span class="s2">".rb"</span><span class="p">:</span> <span class="s2">"ruby"</span><span class="p">,</span>
+    <span class="s2">".swift"</span><span class="p">:</span> <span class="s2">"swift"</span><span class="p">,</span>
+    <span class="s2">".kt"</span><span class="p">:</span> <span class="s2">"kotlin"</span><span class="p">,</span>
 <span class="p">}</span>
 
 
@@ -829,8 +863,16 @@
             <span class="s2">"packer='repomix' needs Node's npx on PATH (https://nodejs.org/); "</span>
             <span class="s2">"the default packer needs nothing"</span>
         <span class="p">)</span>
-    <span class="n">argv</span> <span class="o">=</span> <span class="p">[</span><span class="n">npx</span><span class="p">,</span> <span class="s2">"-y"</span><span class="p">,</span> <span class="n">REPOMIX_SPEC</span><span class="p">,</span> <span class="n">rootdir</span><span class="p">,</span> <span class="s2">"--style"</span><span class="p">,</span> <span class="s2">"markdown"</span><span class="p">,</span> <span class="s2">"--stdout"</span><span class="p">,</span>
-            <span class="s2">"--quiet"</span><span class="p">]</span>
+    <span class="n">argv</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">npx</span><span class="p">,</span>
+        <span class="s2">"-y"</span><span class="p">,</span>
+        <span class="n">REPOMIX_SPEC</span><span class="p">,</span>
+        <span class="n">rootdir</span><span class="p">,</span>
+        <span class="s2">"--style"</span><span class="p">,</span>
+        <span class="s2">"markdown"</span><span class="p">,</span>
+        <span class="s2">"--stdout"</span><span class="p">,</span>
+        <span class="s2">"--quiet"</span><span class="p">,</span>
+    <span class="p">]</span>
     <span class="k">if</span> <span class="n">compress</span><span class="p">:</span>
         <span class="n">argv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"--compress"</span><span class="p">)</span>
     <span class="n">done</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">argv</span><span class="p">,</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -1100,7 +1142,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=9f547d6f"></script>
+</div><script src="../../_static/documentation_options.js?v=d8383de7"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
