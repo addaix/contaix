@@ -92,6 +92,17 @@ bytes_store_to_markdown_store(src, target)
 Markdown conversion is delegated to [`dn.src`](https://github.com/thorwhalen/dn)
 and supports PDF, DOCX, XLSX, PPTX, HTML, IPYNB, and more.
 
+PDFs convert to flat text under `### Page N` headers by default: fast and light. When the tables and section headings matter, pass Docling as the PDF converter (`pip install 'dn[docling]'`; it installs torch and downloads models on first use, and is 50 to 200 times slower):
+
+```python
+from dn.docling_pdf import docling_converters
+
+md = bytes_to_markdown(pdf_bytes, input_format="pdf", converters=docling_converters())
+bytes_store_to_markdown_store(src, target, converters=docling_converters())
+```
+
+markitdown was weighed for the same job and not adopted: it was no better than `dn` on these formats and turned two-column PDF prose into false tables.
+
 ### Cleanup of messy markdown (e.g. ChatGPT exports)
 
 ```python
