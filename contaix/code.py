@@ -79,6 +79,8 @@ def resolve_code_source(
     keys_filt: Callable = lambda x: x.endswith(".py"),
     *,
     keys_exclude=None,
+    respect_gitignore: bool = True,
+    skip_binary: bool = True,
 ) -> Mapping:
     """
     Will resolve code_src to a Mapping whose values are the code strings
@@ -95,6 +97,12 @@ def resolve_code_source(
             predicate identifying keys to *exclude* (e.g. vendored deps, build outputs).
             Applied on top of (after) ``keys_filt``. Pass
             ``DFLT_AGGREGATE_EXCLUDE_PATTERNS`` to skip the usual bloat.
+        respect_gitignore: For a folder inside a git work tree, keep only the files git
+            would track (``git ls-files --cached --others --exclude-standard``), so
+            ``.gitignore``d build outputs and vendored trees never enter. A no-op outside
+            a work tree or without git.
+        skip_binary: For a folder, drop files whose first bytes hold a NUL (images,
+            compiled files, archives).
 
     """
     if keys_filt:
@@ -138,9 +146,78 @@ def resolve_code_source(
         return code_src
     else:
         code_src_rootdir = resolve_code_source_dir_path(code_src)
+        keys_filt = _folder_filter(
+            code_src_rootdir,
+            keys_filt,
+            respect_gitignore=respect_gitignore,
+            skip_binary=skip_binary,
+        )
         return cached_keys(
             filt_iter(TextFiles(code_src_rootdir), filt=keys_filt), keys_cache=sorted
         )
+
+
+def git_tracked_files(rootdir: str) -> Optional[frozenset]:
+    """The files under ``rootdir`` git would track, relative to it; None outside a work tree.
+
+    Untracked files count unless ``.gitignore`` (or ``.git/info/exclude``, or the global
+    excludes file) ignores them, which is what a reader of the repo would see.
+
+    >>> git_tracked_files('/') is None or isinstance(git_tracked_files('/'), frozenset)
+    True
+    """
+    import subprocess
+
+    try:
+        done = subprocess.run(
+            ["git", "-C", rootdir, "ls-files", "-z", "--cached", "--others",
+             "--exclude-standard"],
+            capture_output=True,
+            timeout=60,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return None
+    if done.returncode != 0:
+        return None
+    return frozenset(
+        p for p in done.stdout.decode("utf-8", "surrogateescape").split("\0") if p
+    )
+
+
+#: How many leading bytes :func:`is_binary_file` reads.
+BINARY_SNIFF_BYTES = 8000
+
+
+def is_binary_file(path: str) -> bool:
+    """True when the first bytes of ``path`` hold a NUL (git's own heuristic).
+
+    >>> import tempfile, os
+    >>> with tempfile.NamedTemporaryFile(delete=False) as f:
+    ...     _ = f.write(bytes([0x89, 0x50, 0, 0]))
+    >>> is_binary_file(f.name)
+    True
+    >>> os.unlink(f.name)
+    """
+    try:
+        with open(path, "rb") as f:
+            return b"\0" in f.read(BINARY_SNIFF_BYTES)
+    except OSError:
+        return False
+
+
+def _folder_filter(rootdir, keys_filt, *, respect_gitignore, skip_binary):
+    """``keys_filt``, narrowed to what git tracks and to text files, for a folder source."""
+    tracked = git_tracked_files(rootdir) if respect_gitignore else None
+
+    def filt(key):
+        if not keys_filt(key):
+            return False
+        # git prints '/' on every platform; a folder store's keys use os.sep
+        if tracked is not None and key.replace(os.sep, "/") not in tracked:
+            return False
+        return not (skip_binary and is_binary_file(os.path.join(rootdir, key)))
+
+    return filt
 
 
 Filepath = str
@@ -415,14 +492,93 @@ def _readme_first_chainmap(code_store: Mapping, readme_content: str) -> Mapping:
     return ReadmeFirstChainMap({"README.md": readme_content}, code_store)
 
 
+#: Code-fence language by file extension (the name GitHub's renderer knows); anything
+#: else gets a bare fence.
+FENCE_LANGUAGES = {
+    ".py": "python", ".pyi": "python", ".ipynb": "json",
+    ".js": "javascript", ".mjs": "javascript", ".cjs": "javascript", ".jsx": "jsx",
+    ".ts": "typescript", ".tsx": "tsx", ".json": "json",
+    ".md": "markdown", ".rst": "rst", ".txt": "text",
+    ".toml": "toml", ".yaml": "yaml", ".yml": "yaml", ".cfg": "ini", ".ini": "ini",
+    ".html": "html", ".css": "css", ".scss": "scss", ".sql": "sql",
+    ".sh": "bash", ".bash": "bash", ".zsh": "bash",
+    ".rs": "rust", ".go": "go", ".java": "java", ".c": "c", ".h": "c",
+    ".cpp": "cpp", ".hpp": "cpp", ".rb": "ruby", ".swift": "swift", ".kt": "kotlin",
+}
+
+
+def fence_language(path: str) -> str:
+    """The code-fence language for ``path``, from its extension ('' when unknown).
+
+    >>> fence_language('pkg/mod.py'), fence_language('src/App.tsx'), fence_language('LICENSE')
+    ('python', 'tsx', '')
+    """
+    return FENCE_LANGUAGES.get(os.path.splitext(path)[1].lower(), "")
+
+
+def fenced_item(key: str, value: str) -> str:
+    """One aggregate section: ``## key`` then the content in a fence of its language.
+
+    A fence longer than any backtick run in the content is used, so a Markdown file
+    that holds its own code blocks does not close the section early.
+
+    >>> print(fenced_item('a.py', 'x = 1'))
+    ## a.py
+    <BLANKLINE>
+    ```python
+    x = 1
+    ```
+    """
+    longest = max((len(m) for m in re.findall(r"`{3,}", value)), default=2)
+    fence = "`" * max(3, longest + 1)
+    return f"## {key}\n\n{fence}{fence_language(key)}\n{value.strip()}\n{fence}"
+
+
+def repomix_packer(rootdir: str, *, compress: bool = False) -> str:
+    """Pack ``rootdir`` with `repomix <https://github.com/yamadashy/repomix>`_ (MIT, Node).
+
+    Adds what the built-in walker does not do: Secretlint's secret scan and, with
+    ``compress=True``, Tree-sitter compression of code. Runs ``npx`` (so it needs Node)
+    on the pinned :data:`REPOMIX_SPEC`.
+    """
+    import shutil
+    import subprocess
+
+    npx = shutil.which("npx")
+    if npx is None:
+        raise RuntimeError(
+            "packer='repomix' needs Node's npx on PATH (https://nodejs.org/); "
+            "the default packer needs nothing"
+        )
+    argv = [npx, "-y", REPOMIX_SPEC, rootdir, "--style", "markdown", "--stdout",
+            "--quiet"]
+    if compress:
+        argv.append("--compress")
+    done = subprocess.run(argv, capture_output=True, text=True)
+    if done.returncode != 0:
+        raise RuntimeError(
+            f"repomix exited {done.returncode}: {(done.stderr or '').strip()[:500]}"
+        )
+    return done.stdout
+
+
+#: The repomix release :func:`repomix_packer` runs (weighed in addaix/contaix#25).
+REPOMIX_SPEC = "repomix@1.19.0"
+
+#: Named alternatives to the built-in walker for ``code_aggregate(packer=...)``. A packer
+#: takes a folder and returns the packed text.
+packers: dict = {"repomix": repomix_packer}
+
+
 def code_aggregate(
     code_src: CodeSource,
     *,
     egress: Union[Callable, Filepath] = identity,
-    kv_to_item=lambda k, v: f"## {k}\n\n```python\n{v.strip()}\n```",
+    kv_to_item=fenced_item,
     keys_filt: Union[Callable, str] = r"\.py$",
     keys_exclude=None,
     include_readme: Callable = _readme_from_parent_dir,
+    packer: Union[None, str, Callable] = None,
     **store_aggregate_kwargs,
 ) -> Any:
     """
@@ -447,6 +603,11 @@ def code_aggregate(
         include_readme (Callable): A function that takes the code_store as input and returns
                                    the content of a README file to include in the aggregate.
                                    If None, no README will be included.
+        packer: None (default) for the built-in walker, which honours ``.gitignore``,
+                skips binary files and fences each file in its language. ``"repomix"``
+                (a name in :data:`packers`) or any ``folder -> str`` callable packs the
+                resolved folder instead; ``keys_filt``, ``keys_exclude``,
+                ``include_readme`` and ``kv_to_item`` then do not apply, ``egress`` does.
         **store_aggregate_kwargs: Additional keyword arguments to pass to store_aggregate.
 
     See dol.store_aggregate for more details.
@@ -503,6 +664,17 @@ def code_aggregate(
 
     """
     from dol.trans import warn_and_ignore_if_error
+
+    if packer is not None:
+        pack = packers[packer] if isinstance(packer, str) else packer
+        if isinstance(code_src, Mapping):
+            raise TypeError("packer= packs a folder; got a Mapping (use the default)")
+        packed = pack(resolve_code_source_dir_path(code_src))
+        if isinstance(egress, str):  # as store_aggregate does: save, return the text
+            with open(fullpath(egress), "w") as f:
+                f.write(packed)
+            return packed
+        return egress(packed)
 
     code_store = resolve_code_source(
         code_src, keys_filt=keys_filt, keys_exclude=keys_exclude
