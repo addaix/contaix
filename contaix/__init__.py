@@ -38,58 +38,63 @@ from contaix.code import (
 )
 
 
-# Lazy re-exports for names whose underlying packages (scraped, hubcap)
-# raise at import time when GITHUB_TOKEN is unset. Resolving these via
-# ``__getattr__`` lets ``import contaix`` succeed without a token; the
-# error surfaces only if a caller actually uses one of these names.
-_LAZY_FROM_UTIL = (
-    "markdown_of_site",
-    "download_site",
-    "scrape_multiple_sites",
-    "acquire_content",
-)
-_LAZY_FROM_CODE = ("get_github",)
+# Lazy re-exports. Two reasons to defer: names whose underlying packages (scraped,
+# hubcap) raise at import time when GITHUB_TOKEN is unset, and heavy submodules
+# (``contaix.markdown`` pulls notebook tooling, ~2 s) that a light consumer such as
+# ``contaix.htmlmd`` should not pay for. ``from contaix import name`` still works:
+# the owning submodule is imported on first use.
+_LAZY = {
+    "contaix.util": (
+        "markdown_of_site",
+        "download_site",
+        "scrape_multiple_sites",
+        "acquire_content",
+    ),
+    "contaix.code": ("get_github",),
+    "contaix.urls": (
+        "get_from_clipboard",
+        "extract_urls",
+        "verify_urls",
+        "download_articles",
+        "download_articles_by_section",
+        "remove_hyperlink_crap",
+    ),
+    "contaix.markdown": (
+        "bytes_to_markdown",
+        "bytes_store_to_markdown_store",
+        "dflt_converters",
+        "add_dflt_converter",
+        "truncate_text",
+        "notebook_to_markdown",
+    ),
+    "contaix.web": (
+        "site_to_markdown",
+        "extract_site_nav",
+        "list_site_pages",
+        "fetch_page",
+        "fetch_pages",
+        "fetch_nextjs_rsc",
+        "fetch_llms_full",
+        "find_llms_full_url",
+        "is_nextjs_site",
+        "extract_rsc_page_content",
+        "repair_markdown",
+    ),
+    "contaix.htmlmd": ("html_to_clean_markdown", "sanitize_html"),
+}
+_LAZY_OWNER = {name: mod for mod, names in _LAZY.items() for name in names}
 
 
 def __getattr__(name):
-    if name in _LAZY_FROM_UTIL:
-        from contaix import util
+    mod = _LAZY_OWNER.get(name)
+    if mod is None:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    import importlib
 
-        return getattr(util, name)
-    if name in _LAZY_FROM_CODE:
-        from contaix import code
-
-        return getattr(code, name)
-    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    value = getattr(importlib.import_module(mod), name)
+    globals()[name] = value  # cache: later lookups skip __getattr__
+    return value
 
 
-from contaix.urls import (
-    get_from_clipboard,
-    extract_urls,
-    verify_urls,
-    download_articles,
-    download_articles_by_section,
-    remove_hyperlink_crap,
-)
-from contaix.markdown import (
-    bytes_to_markdown,
-    bytes_store_to_markdown_store,
-    dflt_converters,
-    add_dflt_converter,
-    truncate_text,
-    notebook_to_markdown,
-)
-from contaix.web import (
-    site_to_markdown,
-    extract_site_nav,
-    list_site_pages,
-    fetch_page,
-    fetch_pages,
-    fetch_nextjs_rsc,
-    fetch_llms_full,
-    find_llms_full_url,
-    is_nextjs_site,
-    html_to_clean_markdown,
-    extract_rsc_page_content,
-    repair_markdown,
-)
+def __dir__():
+    return sorted([*globals(), *_LAZY_OWNER])
