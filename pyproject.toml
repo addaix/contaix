@@ -105,6 +105,7 @@ convention = "google"
 minversion = "6.0"
 testpaths = [
     "contaix",
+    "tests",
 ]
 doctest_optionflags = [
     "NORMALIZE_WHITESPACE",

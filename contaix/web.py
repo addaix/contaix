@@ -30,6 +30,7 @@ from urllib.parse import urlparse, urljoin
 from typing import Iterator
 
 import requests
+from contaix.htmlmd import html_to_clean_markdown  # noqa: F401 (re-exported)
 from scraped.html_markdown import (  # noqa: F401 (re-exported)
     DEEP_HTML_RECURSION_LIMIT,
     DEEP_HTML_THREAD_STACK_BYTES,
@@ -388,59 +389,8 @@ def is_nextjs_site(html: str) -> bool:
 # ---------------------------------------------------------------------------
 
 
-# The conversion, its cleaning passes and the markdownify defaults live in
-# ``scraped.html_markdown`` (one source of truth for both converters); contaix only
-# keeps its historical signature on top.
-
-
-def html_to_clean_markdown(
-    html: str,
-    *,
-    body_width: int = 0,
-    ignore_images: bool = True,
-    include_links: bool = True,
-    **markdownify_options,
-) -> str:
-    """Convert HTML to clean markdown (via ``markdownify``, MIT-licensed).
-
-    A thin wrapper over :func:`scraped.html_markdown.html_to_markdown_str` (with the
-    ``lxml`` parser and no trailing newline), which owns the cleaning passes.
-
-    Parameters
-    ----------
-    html : str
-        Raw HTML content.
-    body_width : int
-        Kept for backward compatibility. Only ``0`` (no wrapping, the default)
-        is supported; any other value raises ``ValueError``.
-    ignore_images : bool
-        Whether to skip image tags.
-    include_links : bool
-        Whether to include hyperlinks in output (``False`` keeps the link text only).
-    **markdownify_options
-        Options for ``markdownify.MarkdownConverter``, overriding
-        :data:`HTML_TO_MARKDOWN_DEFAULTS`. Unknown names raise ``TypeError``
-        (``MarkdownConverter`` would silently ignore them), in particular the
-        ``html2text`` options this function accepted before (``ignore_links``,
-        ``unicode_snob``, ...).
-
-    >>> html_to_clean_markdown("<h1>Hi</h1><p>a <b>b</b> <a href='u'>c</a></p>")
-    '# Hi\\n\\na **b** [c](u)'
-    >>> html_to_clean_markdown("<p>a <a href='u'>c</a></p>", include_links=False)
-    'a c'
-    """
-    if body_width:
-        raise ValueError(
-            "body_width is not supported: markdownify never wraps lines. "
-            "Pass body_width=0 (the default)."
-        )
-    return html_to_markdown_str(
-        html,
-        ignore_images=ignore_images,
-        include_links=include_links,
-        parser="lxml",
-        **markdownify_options,
-    ).strip()
+# ``html_to_clean_markdown`` lives in the light :mod:`contaix.htmlmd` (re-exported
+# above); the cleaning passes and markdownify defaults are in ``scraped.html_markdown``.
 
 
 # ---------------------------------------------------------------------------
