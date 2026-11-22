@@ -1,4 +1,4 @@
-> built 2026-11-22 14:22 UTC from 9e9cf93 (main) · contaix 0.0.28. Details: build_info.json
+> built 2026-11-22 14:38 UTC from cbe4874 (main) · contaix 0.0.29. Details: build_info.json
 
 # index.html.md
 
@@ -1266,18 +1266,16 @@ Convert a URL to a filesystem-safe cache key.
 
 # About this build
 
-This documentation was built on **2026-11-22 14:22 UTC** from commit <a href="https://github.com/addaix/contaix/commit/9e9cf936247fe4191d38965c9140fe9de16fed89"><code>9e9cf93</code></a> on branch <code>main</code>, for **contaix 0.0.28** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-22 14:38 UTC** from commit <a href="https://github.com/addaix/contaix/commit/cbe48743899d5b64157881fe6261bd0dc206e193"><code>cbe4874</code></a> on branch <code>main</code>, for **contaix 0.0.29** (from <code>pyproject.toml</code>).
 
-#### WARNING
-The documentation and the package may be misaligned:
-
-- The documented version (0.0.28) is behind the latest release on PyPI (0.0.29): `pip install contaix` gives newer code than these docs describe.
+#### NOTE
+Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
 
 ## Source
 
 |                     |                                                                                                                                                       |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/addaix/contaix/commit/9e9cf936247fe4191d38965c9140fe9de16fed89"><code>9e9cf936247fe4191d38965c9140fe9de16fed89</code></a> |
+| Commit              | <a href="https://github.com/addaix/contaix/commit/cbe48743899d5b64157881fe6261bd0dc206e193"><code>cbe48743899d5b64157881fe6261bd0dc206e193</code></a> |
 | Branch              | <code>main</code>                                                                                                                                     |
 | Tags at this commit | none                                                                                                                                                  |
 | Working tree        | clean                                                                                                                                                 |
@@ -1288,9 +1286,9 @@ The documentation and the package may be misaligned:
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>addaix/contaix</code>                                                                |
-| Run          | <a href="https://github.com/addaix/contaix/actions/runs/45032255504">45032255504</a>       |
+| Run          | <a href="https://github.com/addaix/contaix/actions/runs/45033719553">45033719553</a>       |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>9e9cf936247fe4191d38965c9140fe9de16fed89</code> (in the history of the built commit) |
+| Event commit | <code>cbe48743899d5b64157881fe6261bd0dc206e193</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -1315,13 +1313,13 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/contaix/0.0.29/">0.0.29</a>, newer than the documented version (0.0.28).
+Latest release: <a href="https://pypi.org/project/contaix/0.0.29/">0.0.29</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/addaix/contaix && cd contaix
-git checkout 9e9cf936247fe4191d38965c9140fe9de16fed89
+git checkout cbe48743899d5b64157881fe6261bd0dc206e193
 pip install "epythet==0.2.23"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
