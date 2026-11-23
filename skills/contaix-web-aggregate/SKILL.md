@@ -1,13 +1,13 @@
 ---
-name: contaix_web_aggregate
-description: Aggregate web content from multiple pages into structured markdown. Use when the user wants to aggregate a non-documentation website (company info, product pages), when contaix_docs_to_markdown doesn't work for a specific site, when the user wants manual control over which pages to include, or when dealing with JavaScript-rendered sites that need WebFetch.
+name: contaix-web-aggregate
+description: Aggregate web content from multiple pages into structured markdown. Use when the user wants to aggregate a non-documentation website (company info, product pages), when contaix-docs-to-markdown doesn't work for a specific site, when the user wants manual control over which pages to include, or when dealing with JavaScript-rendered sites that need WebFetch.
 argument-hint: <URL or description of site to aggregate>
 ---
 
 # Web Content Aggregation
 
 Aggregate content from arbitrary websites into structured markdown.
-Use this when `contaix_docs_to_markdown` doesn't handle the site,
+Use this when `contaix-docs-to-markdown` doesn't handle the site,
 or when you need fine-grained control.
 
 ## Step 0: Understand what the user wants
@@ -35,7 +35,7 @@ sections on this page. What kind of site is this?"
 
 ### Decision: Is this a documentation site?
 
-If yes → try `contaix_docs_to_markdown` skill first.
+If yes → try `contaix-docs-to-markdown` skill first.
 If no → continue with manual aggregation below.
 
 ### Decision: Is content JavaScript-rendered?

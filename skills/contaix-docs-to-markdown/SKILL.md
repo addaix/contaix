@@ -1,5 +1,5 @@
 ---
-name: contaix_docs_to_markdown
+name: contaix-docs-to-markdown
 description: Convert a documentation website into a single, clean markdown file. Use when the user provides a documentation URL and wants it as markdown, or says "get me the docs", "download documentation", "make a markdown of this site", "aggregate these docs", or gives a URL to a docs site. Also use for converting API reference sites, developer guides, product documentation, or knowledge bases.
 argument-hint: <URL of documentation site>
 ---
@@ -100,7 +100,7 @@ If you see other markdown issues not covered by `repair_markdown`, add a
 new fixer to `contaix.web._fix_*` and wire it into `repair_markdown`.
 
 **Empty content / "Loading..."** → Site uses client-side rendering that
-`site_to_markdown` can't handle. Use `contaix_web_aggregate` skill with
+`site_to_markdown` can't handle. Use `contaix-web-aggregate` skill with
 WebFetch instead.
 
 **Missing pages** → Check if the site has tabs/sections. Use `tab_filter`:
@@ -116,7 +116,7 @@ print(f"Groups: {groups}")
 ```
 
 **Navigation not detected** → The site doesn't use Next.js or standard nav
-elements. Use `contaix_web_aggregate` skill to manually curate page list.
+elements. Use `contaix-web-aggregate` skill to manually curate page list.
 
 **Missing code examples** → RSC extraction may miss lazy-loaded code blocks.
 For critical pages, supplement with WebFetch:
@@ -149,7 +149,7 @@ from contaix.web import (
 )
 ```
 
-Or switch to the `contaix_web_aggregate` skill for full manual control.
+Or switch to the `contaix-web-aggregate` skill for full manual control.
 
 ## API Quick Reference
 
