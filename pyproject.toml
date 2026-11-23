@@ -58,8 +58,12 @@ Changelog = "https://github.com/addaix/contaix/blob/main/CHANGELOG.md"
 pdf = [
     "pdfdol",
 ]
+dedup = [
+    "hg",  # deduplicate_string_lines, used by min_number_of_duplicated_lines
+]
 all = [
     "pdfdol",
+    "hg",
     "dn[all]",
 ]
 
