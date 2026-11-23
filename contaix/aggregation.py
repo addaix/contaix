@@ -44,7 +44,13 @@ def aggregate_store(
         wrappers.append(filt_iter(filt=lambda x: x not in exclude))
 
     if min_number_of_duplicated_lines is not None:
-        from hg import deduplicate_string_lines
+        try:
+            from hg import deduplicate_string_lines
+        except ImportError as e:  # optional dependency
+            raise ImportError(
+                "min_number_of_duplicated_lines needs the optional dependency `hg`; "
+                "install the 'dedup' extra of contaix"
+            ) from e
 
         remove_duplicate_lines = wrap_kvs(
             value_decoder=lambda v: deduplicate_string_lines(
