@@ -5,19 +5,19 @@ orphan: true
 
 # About this build
 
-This documentation was built on **2026-11-22 18:58 UTC** from commit <a href="https://github.com/addaix/contaix/commit/b9ac8ddf7d52fe002fa2a4ba16274ca509c2cf4e"><code>b9ac8dd</code></a> on branch <code>main</code>, for **contaix 0.0.30** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-23 04:37 UTC** from commit <a href="https://github.com/addaix/contaix/commit/f2177566dbcf6da3f1462d10d8b62d774c04e55c"><code>f217756</code></a> on branch <code>main</code>, for **contaix 0.0.31** (from <code>pyproject.toml</code>).
 
 :::{warning}
 The documentation and the package may be misaligned:
 
-- The documented version (0.0.30) is behind the latest release on PyPI (0.0.31): `pip install contaix` gives newer code than these docs describe.
+- The documented version (0.0.31) is behind the latest release on PyPI (0.0.32): `pip install contaix` gives newer code than these docs describe.
 :::
 
 ## Source
 
 | | |
 |---|---|
-| Commit | <a href="https://github.com/addaix/contaix/commit/b9ac8ddf7d52fe002fa2a4ba16274ca509c2cf4e"><code>b9ac8ddf7d52fe002fa2a4ba16274ca509c2cf4e</code></a> |
+| Commit | <a href="https://github.com/addaix/contaix/commit/f2177566dbcf6da3f1462d10d8b62d774c04e55c"><code>f2177566dbcf6da3f1462d10d8b62d774c04e55c</code></a> |
 | Branch | <code>main</code> |
 | Tags at this commit | none |
 | Working tree | clean |
@@ -28,9 +28,9 @@ The documentation and the package may be misaligned:
 | | |
 |---|---|
 | Repository | <code>addaix/contaix</code> |
-| Run | <a href="https://github.com/addaix/contaix/actions/runs/45057833468">45057833468</a> |
+| Run | <a href="https://github.com/addaix/contaix/actions/runs/45112711794">45112711794</a> |
 | Ref | <code>refs/heads/main</code> |
-| Event commit | <code>b9ac8ddf7d52fe002fa2a4ba16274ca509c2cf4e</code> (in the history of the built commit) |
+| Event commit | <code>f2177566dbcf6da3f1462d10d8b62d774c04e55c</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -55,13 +55,13 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/contaix/0.0.31/">0.0.31</a>, newer than the documented version (0.0.30).
+Latest release: <a href="https://pypi.org/project/contaix/0.0.32/">0.0.32</a>, newer than the documented version (0.0.31).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/addaix/contaix && cd contaix
-git checkout b9ac8ddf7d52fe002fa2a4ba16274ca509c2cf4e
+git checkout f2177566dbcf6da3f1462d10d8b62d774c04e55c
 pip install "epythet==0.2.23"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
