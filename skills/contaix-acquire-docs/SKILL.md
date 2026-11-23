@@ -1,6 +1,6 @@
 ---
 name: contaix-acquire-docs
-description: Acquire a tool's documentation as a single agent-ready markdown bundle, plus any machine-readable specs (OpenAPI, MCP, AsyncAPI, GraphQL). Use whenever the user provides one or more URLs (or a tool/product name) and wants the docs / manual / API reference as a context bundle for an AI agent. Triggers on "acquire the docs", "get me the docs", "bundle this manual", "make a context for tool X", "download the API reference", "give me everything as one md", "fetch the OpenAPI spec", "grab the MCP spec", or any URL pointing at a documentation / developer / API / manual site. Tries cheapest paths first — GitHub source, llms.txt, raw-markdown variants of doc URLs — and only falls back to HTML scraping (via contaix_docs_to_markdown / contaix_web_aggregate) when nothing better is available.
+description: Acquire a tool's documentation as a single agent-ready markdown bundle, plus any machine-readable specs (OpenAPI, MCP, AsyncAPI, GraphQL). Use whenever the user provides one or more URLs (or a tool/product name) and wants the docs / manual / API reference as a context bundle for an AI agent. Triggers on "acquire the docs", "get me the docs", "bundle this manual", "make a context for tool X", "download the API reference", "give me everything as one md", "fetch the OpenAPI spec", "grab the MCP spec", or any URL pointing at a documentation / developer / API / manual site. Tries cheapest paths first — GitHub source, llms.txt, raw-markdown variants of doc URLs — and only falls back to HTML scraping (via contaix-docs-to-markdown / contaix-web-aggregate) when nothing better is available.
 argument-hint: <one or more docs URLs, or a tool/product name>
 ---
 
@@ -139,10 +139,10 @@ fetching everything that returns markdown.
 
 Only if rungs 1–4 fail. **Delegate to the existing skills:**
 
-- **`contaix_docs_to_markdown`** — for well-structured documentation sites.
+- **`contaix-docs-to-markdown`** — for well-structured documentation sites.
   One-call API (`site_to_markdown`), handles Next.js RSC, runs `repair_markdown`
   on the output.
-- **`contaix_web_aggregate`** — for non-doc sites or JS-rendered pages that
+- **`contaix-web-aggregate`** — for non-doc sites or JS-rendered pages that
   need WebFetch per page.
 
 Always invoke this rung **explicitly noting** that the cheaper rungs were tried
@@ -318,10 +318,10 @@ curl -sSL "<DOCS_URL>" | grep -iE 'generator|mintlify|docusaurus|gitbook|nextra|
 
 Concretely: if rungs 1–4 are exhausted with no usable artifact, **hand off** to:
 
-- `contaix_docs_to_markdown` — for the structured-docs HTML→md pipeline (its
+- `contaix-docs-to-markdown` — for the structured-docs HTML→md pipeline (its
   `site_to_markdown` already handles Next.js RSC, then `repair_markdown` cleans
   the result).
-- `contaix_web_aggregate` — for sites that need per-page WebFetch curation.
+- `contaix-web-aggregate` — for sites that need per-page WebFetch curation.
 
 This skill complements them; it doesn't replace them. The whole point is to
 avoid invoking them when something cheaper works.
