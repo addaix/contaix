@@ -1,36 +1,36 @@
 {
   "schema_version": 1,
-  "built_at": "2026-11-23T06:31:35Z",
+  "built_at": "2026-11-23T22:21:22Z",
   "package": {
     "name": "contaix",
-    "version": "0.0.32",
+    "version": "0.0.33",
     "display_name": "contaix",
     "source": "pyproject.toml"
   },
   "git": {
     "available": true,
-    "commit": "61532bcc8f54e4886e68a48797db18932cf34edd",
-    "short_commit": "61532bc",
+    "commit": "b40e51669c564ebe37a7cf41a9becefc4d42e52b",
+    "short_commit": "b40e516",
     "branch": "main",
     "tags": [],
     "dirty": false,
     "remote_url": "https://github.com/addaix/contaix",
-    "commit_url": "https://github.com/addaix/contaix/commit/61532bcc8f54e4886e68a48797db18932cf34edd",
+    "commit_url": "https://github.com/addaix/contaix/commit/b40e51669c564ebe37a7cf41a9becefc4d42e52b",
     "error": null
   },
   "ci": {
     "provider": "github",
     "repository": "addaix/contaix",
-    "sha": "61532bcc8f54e4886e68a48797db18932cf34edd",
+    "sha": "b40e51669c564ebe37a7cf41a9becefc4d42e52b",
     "sha_in_history": true,
     "ref": "refs/heads/main",
     "ref_name": "main",
-    "run_id": "45124402713",
-    "run_url": "https://github.com/addaix/contaix/actions/runs/45124402713",
+    "run_id": "45278407852",
+    "run_url": "https://github.com/addaix/contaix/actions/runs/45278407852",
     "server_url": "https://github.com"
   },
   "tools": {
-    "epythet": "0.2.23",
+    "epythet": "0.2.25",
     "sphinx": "9.1.1",
     "docutils": "0.22.4",
     "python": "3.12.16"
@@ -60,11 +60,11 @@
   },
   "pypi": {
     "checked": true,
-    "latest": "0.0.32",
+    "latest": "0.0.33",
     "relation": "same",
     "error": null
   },
-  "reproduce": "git clone https://github.com/addaix/contaix && cd contaix\ngit checkout 61532bcc8f54e4886e68a48797db18932cf34edd\npip install \"epythet==0.2.23\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
+  "reproduce": "git clone https://github.com/addaix/contaix && cd contaix\ngit checkout b40e51669c564ebe37a7cf41a9becefc4d42e52b\npip install \"epythet==0.2.25\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
   "warnings": [],
   "alignment": {
     "aligned": true,

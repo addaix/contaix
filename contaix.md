@@ -1,4 +1,4 @@
-> built 2026-11-23 06:31 UTC from 61532bc (main) · contaix 0.0.32. Details: build_info.json
+> built 2026-11-23 22:21 UTC from b40e516 (main) · contaix 0.0.33. Details: build_info.json
 
 # index.html.md
 
@@ -23,15 +23,17 @@ This package ships agent skills you can install into any agent host with
 
 ```bash
 gh skill install thorwhalen/contaix contaix-acquire-docs --agent claude-code
-gh skill install thorwhalen/contaix contaix_docs_to_markdown
-gh skill install thorwhalen/contaix contaix_web_aggregate
+gh skill install thorwhalen/contaix contaix-docs-to-markdown
+gh skill install thorwhalen/contaix contaix-web-aggregate
 ```
 
 | Skill                      | Use it when…                                                                                                       |
 |----------------------------|--------------------------------------------------------------------------------------------------------------------|
 | `contaix-acquire-docs`     | acquiring a tool’s docs (plus OpenAPI/MCP/GraphQL specs) as one agent-ready markdown bundle, cheapest source first |
-| `contaix_docs_to_markdown` | converting a documentation website into a single clean markdown file                                               |
-| `contaix_web_aggregate`    | aggregating arbitrary (non-docs) web pages into structured markdown, with manual control                           |
+| `contaix-docs-to-markdown` | converting a documentation website into a single clean markdown file                                               |
+| `contaix-web-aggregate`    | aggregating arbitrary (non-docs) web pages into structured markdown, with manual control                           |
+
+The last two were named `contaix_docs_to_markdown` and `contaix_web_aggregate` until 2026-11: skill names must be lowercase and hyphenated. A copy installed under an old name keeps working; reinstall it under the new name to get updates.
 
 ## Quick Start
 
@@ -1393,7 +1395,7 @@ Convert a URL to a filesystem-safe cache key.
 
 # About this build
 
-This documentation was built on **2026-11-23 06:31 UTC** from commit <a href="https://github.com/addaix/contaix/commit/61532bcc8f54e4886e68a48797db18932cf34edd"><code>61532bc</code></a> on branch <code>main</code>, for **contaix 0.0.32** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-23 22:21 UTC** from commit <a href="https://github.com/addaix/contaix/commit/b40e51669c564ebe37a7cf41a9becefc4d42e52b"><code>b40e516</code></a> on branch <code>main</code>, for **contaix 0.0.33** (from <code>pyproject.toml</code>).
 
 #### NOTE
 Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
@@ -1402,7 +1404,7 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 |                     |                                                                                                                                                       |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/addaix/contaix/commit/61532bcc8f54e4886e68a48797db18932cf34edd"><code>61532bcc8f54e4886e68a48797db18932cf34edd</code></a> |
+| Commit              | <a href="https://github.com/addaix/contaix/commit/b40e51669c564ebe37a7cf41a9becefc4d42e52b"><code>b40e51669c564ebe37a7cf41a9becefc4d42e52b</code></a> |
 | Branch              | <code>main</code>                                                                                                                                     |
 | Tags at this commit | none                                                                                                                                                  |
 | Working tree        | clean                                                                                                                                                 |
@@ -1413,15 +1415,15 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>addaix/contaix</code>                                                                |
-| Run          | <a href="https://github.com/addaix/contaix/actions/runs/45124402713">45124402713</a>       |
+| Run          | <a href="https://github.com/addaix/contaix/actions/runs/45278407852">45278407852</a>       |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>61532bcc8f54e4886e68a48797db18932cf34edd</code> (in the history of the built commit) |
+| Event commit | <code>b40e51669c564ebe37a7cf41a9becefc4d42e52b</code> (in the history of the built commit) |
 
 ## Tools
 
 |          |         |
 |----------|---------|
-| epythet  | 0.2.23  |
+| epythet  | 0.2.25  |
 | Sphinx   | 9.1.1   |
 | docutils | 0.22.4  |
 | Python   | 3.12.16 |
@@ -1440,14 +1442,14 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/contaix/0.0.32/">0.0.32</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/contaix/0.0.33/">0.0.33</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/addaix/contaix && cd contaix
-git checkout 61532bcc8f54e4886e68a48797db18932cf34edd
-pip install "epythet==0.2.23"
+git checkout b40e51669c564ebe37a7cf41a9becefc4d42e52b
+pip install "epythet==0.2.25"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
 
@@ -1470,7 +1472,7 @@ Skills are folders holding a `SKILL.md` (the [Agent Skills](https://agentskills.
 
 ### `contaix-acquire-docs`
 
-Acquire a tool’s documentation as a single agent-ready markdown bundle, plus any machine-readable specs (OpenAPI, MCP, AsyncAPI, GraphQL). Use whenever the user provides one or more URLs (or a tool/product name) and wants the docs / manual / API reference as a context bundle for an AI agent. Triggers on “acquire the docs”, “get me the docs”, “bundle this manual”, “make a context for tool X”, “download the API reference”, “give me everything as one md”, “fetch the OpenAPI spec”, “grab the MCP spec”, or any URL pointing at a documentation / developer / API / manual site. Tries cheapest paths first — GitHub source, llms.txt, raw-markdown variants of doc URLs — and only falls back to HTML scraping (via contaix_docs_to_markdown / contaix_web_aggregate) when nothing better is available.
+Acquire a tool’s documentation as a single agent-ready markdown bundle, plus any machine-readable specs (OpenAPI, MCP, AsyncAPI, GraphQL). Use whenever the user provides one or more URLs (or a tool/product name) and wants the docs / manual / API reference as a context bundle for an AI agent. Triggers on “acquire the docs”, “get me the docs”, “bundle this manual”, “make a context for tool X”, “download the API reference”, “give me everything as one md”, “fetch the OpenAPI spec”, “grab the MCP spec”, or any URL pointing at a documentation / developer / API / manual site. Tries cheapest paths first — GitHub source, llms.txt, raw-markdown variants of doc URLs — and only falls back to HTML scraping (via contaix-docs-to-markdown / contaix-web-aggregate) when nothing better is available.
 
 ```bash
 gh skill install addaix/contaix contaix-acquire-docs --agent claude-code
@@ -1478,25 +1480,25 @@ gh skill install addaix/contaix contaix-acquire-docs --agent claude-code
 
 Source: [`skills/contaix-acquire-docs`](https://github.com/addaix/contaix/tree/HEAD/skills/contaix-acquire-docs).
 
-### `contaix_docs_to_markdown`
+### `contaix-docs-to-markdown`
 
 Convert a documentation website into a single, clean markdown file. Use when the user provides a documentation URL and wants it as markdown, or says “get me the docs”, “download documentation”, “make a markdown of this site”, “aggregate these docs”, or gives a URL to a docs site. Also use for converting API reference sites, developer guides, product documentation, or knowledge bases.
 
 ```bash
-gh skill install addaix/contaix contaix_docs_to_markdown --agent claude-code
+gh skill install addaix/contaix contaix-docs-to-markdown --agent claude-code
 ```
 
-Source: [`skills/contaix_docs_to_markdown`](https://github.com/addaix/contaix/tree/HEAD/skills/contaix_docs_to_markdown).
+Source: [`skills/contaix-docs-to-markdown`](https://github.com/addaix/contaix/tree/HEAD/skills/contaix-docs-to-markdown).
 
-### `contaix_web_aggregate`
+### `contaix-web-aggregate`
 
-Aggregate web content from multiple pages into structured markdown. Use when the user wants to aggregate a non-documentation website (company info, product pages), when contaix_docs_to_markdown doesn’t work for a specific site, when the user wants manual control over which pages to include, or when dealing with JavaScript-rendered sites that need WebFetch.
+Aggregate web content from multiple pages into structured markdown. Use when the user wants to aggregate a non-documentation website (company info, product pages), when contaix-docs-to-markdown doesn’t work for a specific site, when the user wants manual control over which pages to include, or when dealing with JavaScript-rendered sites that need WebFetch.
 
 ```bash
-gh skill install addaix/contaix contaix_web_aggregate --agent claude-code
+gh skill install addaix/contaix contaix-web-aggregate --agent claude-code
 ```
 
-Source: [`skills/contaix_web_aggregate`](https://github.com/addaix/contaix/tree/HEAD/skills/contaix_web_aggregate).
+Source: [`skills/contaix-web-aggregate`](https://github.com/addaix/contaix/tree/HEAD/skills/contaix-web-aggregate).
 
 ## Instruction files
 

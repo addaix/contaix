@@ -19,15 +19,17 @@ This package ships agent skills you can install into any agent host with
 
 ```bash
 gh skill install thorwhalen/contaix contaix-acquire-docs --agent claude-code
-gh skill install thorwhalen/contaix contaix_docs_to_markdown
-gh skill install thorwhalen/contaix contaix_web_aggregate
+gh skill install thorwhalen/contaix contaix-docs-to-markdown
+gh skill install thorwhalen/contaix contaix-web-aggregate
 ```
 
 | Skill                      | Use it when…                                                                                                       |
 |----------------------------|--------------------------------------------------------------------------------------------------------------------|
 | `contaix-acquire-docs`     | acquiring a tool’s docs (plus OpenAPI/MCP/GraphQL specs) as one agent-ready markdown bundle, cheapest source first |
-| `contaix_docs_to_markdown` | converting a documentation website into a single clean markdown file                                               |
-| `contaix_web_aggregate`    | aggregating arbitrary (non-docs) web pages into structured markdown, with manual control                           |
+| `contaix-docs-to-markdown` | converting a documentation website into a single clean markdown file                                               |
+| `contaix-web-aggregate`    | aggregating arbitrary (non-docs) web pages into structured markdown, with manual control                           |
+
+The last two were named `contaix_docs_to_markdown` and `contaix_web_aggregate` until 2026-11: skill names must be lowercase and hyphenated. A copy installed under an old name keeps working; reinstall it under the new name to get updates.
 
 ## Quick Start
 

@@ -271,8 +271,8 @@ collections — into clean markdown contexts for AI agents to consume.</p>
 <a class="reference external" href="https://cli.github.com/manual/gh_skill"><code class="docutils literal notranslate"><span class="pre">gh</span> <span class="pre">skill</span></code></a> (don’t have it?
 <a class="reference external" href="https://cli.github.com/">install gh</a>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gh<span class="w"> </span>skill<span class="w"> </span>install<span class="w"> </span>thorwhalen/contaix<span class="w"> </span>contaix-acquire-docs<span class="w"> </span>--agent<span class="w"> </span>claude-code
-gh<span class="w"> </span>skill<span class="w"> </span>install<span class="w"> </span>thorwhalen/contaix<span class="w"> </span>contaix_docs_to_markdown
-gh<span class="w"> </span>skill<span class="w"> </span>install<span class="w"> </span>thorwhalen/contaix<span class="w"> </span>contaix_web_aggregate
+gh<span class="w"> </span>skill<span class="w"> </span>install<span class="w"> </span>thorwhalen/contaix<span class="w"> </span>contaix-docs-to-markdown
+gh<span class="w"> </span>skill<span class="w"> </span>install<span class="w"> </span>thorwhalen/contaix<span class="w"> </span>contaix-web-aggregate
 </pre></div>
 </div>
 <div class="table-wrapper colwidths-auto docutils container">
@@ -286,15 +286,16 @@ gh<span class="w"> </span>skill<span class="w"> </span>install<span class="w"> <
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">contaix-acquire-docs</span></code></p></td>
 <td><p>acquiring a tool’s docs (plus OpenAPI/MCP/GraphQL specs) as one agent-ready markdown bundle, cheapest source first</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">contaix_docs_to_markdown</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">contaix-docs-to-markdown</span></code></p></td>
 <td><p>converting a documentation website into a single clean markdown file</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">contaix_web_aggregate</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">contaix-web-aggregate</span></code></p></td>
 <td><p>aggregating arbitrary (non-docs) web pages into structured markdown, with manual control</p></td>
 </tr>
 </tbody>
 </table>
 </div>
+<p>The last two were named <code class="docutils literal notranslate"><span class="pre">contaix_docs_to_markdown</span></code> and <code class="docutils literal notranslate"><span class="pre">contaix_web_aggregate</span></code> until 2026-11: skill names must be lowercase and hyphenated. A copy installed under an old name keeps working; reinstall it under the new name to get updates.</p>
 </section>
 <section id="quick-start">
 <h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">¶</a></h2>
@@ -446,7 +447,7 @@ format conversion</p></li>
 </section>
 </section>
 
-<p class="epythet-provenance" style="font-size:.8em;opacity:.65;margin-top:2.5em;text-align:right">built 2026-11-23 06:31 UTC from <a href="https://github.com/addaix/contaix/commit/61532bcc8f54e4886e68a48797db18932cf34edd">61532bc</a> (main) · contaix 0.0.32 · <a href="about-this-build.html">about this build</a></p>
+<p class="epythet-provenance" style="font-size:.8em;opacity:.65;margin-top:2.5em;text-align:right">built 2026-11-23 22:21 UTC from <a href="https://github.com/addaix/contaix/commit/b40e51669c564ebe37a7cf41a9becefc4d42e52b">b40e516</a> (main) · contaix 0.0.33 · <a href="about-this-build.html">about this build</a></p>
         </article>
       </div>
       <footer>
@@ -513,7 +514,7 @@ format conversion</p></li>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=51c9d36a"></script>
+</div><script src="_static/documentation_options.js?v=f889a70c"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

@@ -2,7 +2,7 @@
 
 # About this build
 
-This documentation was built on **2026-11-23 06:31 UTC** from commit <a href="https://github.com/addaix/contaix/commit/61532bcc8f54e4886e68a48797db18932cf34edd"><code>61532bc</code></a> on branch <code>main</code>, for **contaix 0.0.32** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-23 22:21 UTC** from commit <a href="https://github.com/addaix/contaix/commit/b40e51669c564ebe37a7cf41a9becefc4d42e52b"><code>b40e516</code></a> on branch <code>main</code>, for **contaix 0.0.33** (from <code>pyproject.toml</code>).
 
 #### NOTE
 Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
@@ -11,7 +11,7 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 |                     |                                                                                                                                                       |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/addaix/contaix/commit/61532bcc8f54e4886e68a48797db18932cf34edd"><code>61532bcc8f54e4886e68a48797db18932cf34edd</code></a> |
+| Commit              | <a href="https://github.com/addaix/contaix/commit/b40e51669c564ebe37a7cf41a9becefc4d42e52b"><code>b40e51669c564ebe37a7cf41a9becefc4d42e52b</code></a> |
 | Branch              | <code>main</code>                                                                                                                                     |
 | Tags at this commit | none                                                                                                                                                  |
 | Working tree        | clean                                                                                                                                                 |
@@ -22,15 +22,15 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>addaix/contaix</code>                                                                |
-| Run          | <a href="https://github.com/addaix/contaix/actions/runs/45124402713">45124402713</a>       |
+| Run          | <a href="https://github.com/addaix/contaix/actions/runs/45278407852">45278407852</a>       |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>61532bcc8f54e4886e68a48797db18932cf34edd</code> (in the history of the built commit) |
+| Event commit | <code>b40e51669c564ebe37a7cf41a9becefc4d42e52b</code> (in the history of the built commit) |
 
 ## Tools
 
 |          |         |
 |----------|---------|
-| epythet  | 0.2.23  |
+| epythet  | 0.2.25  |
 | Sphinx   | 9.1.1   |
 | docutils | 0.22.4  |
 | Python   | 3.12.16 |
@@ -49,14 +49,14 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/contaix/0.0.32/">0.0.32</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/contaix/0.0.33/">0.0.33</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/addaix/contaix && cd contaix
-git checkout 61532bcc8f54e4886e68a48797db18932cf34edd
-pip install "epythet==0.2.23"
+git checkout b40e51669c564ebe37a7cf41a9becefc4d42e52b
+pip install "epythet==0.2.25"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
 
