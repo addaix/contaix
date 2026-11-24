@@ -109,3 +109,17 @@ def test_windows_keys_are_matched_against_gits_forward_slashes(repo, monkeypatch
     )
     monkeypatch.setattr(code.os, "sep", "\\")
     assert keep("pkg\\mod.py") and not keep("build\\gen.py")
+
+
+def test_a_folder_that_is_itself_ignored_is_walked_whole(repo):
+    """The enclosing repo's rules say nothing inside an ignored folder (addaix/contaix#35)."""
+    assert _keys(resolve_code_source(str(repo / "build"))) == {"gen.py"}
+    # A package in an in-repo .venv: uv writes .venv/.gitignore = '*'.
+    pkg = repo / ".venv" / "lib" / "site-packages" / "somepkg"
+    pkg.mkdir(parents=True)
+    (repo / ".venv" / ".gitignore").write_text("*\n")
+    (pkg / "__init__.py").write_text("x = 1\n")
+    (pkg / "core.py").write_text("y = 2\n")
+    assert _keys(resolve_code_source(str(pkg))) == {"__init__.py", "core.py"}
+    out = code_aggregate(str(pkg), include_readme=None)
+    assert "## core.py" in out and "y = 2" in out

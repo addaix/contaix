@@ -158,17 +158,29 @@ def resolve_code_source(
 
 
 def git_tracked_files(rootdir: str) -> Optional[frozenset]:
-    """The files under ``rootdir`` git would track, relative to it; None outside a work tree.
+    """The files under ``rootdir`` git would track, relative to it; None for no filtering.
 
     Untracked files count unless ``.gitignore`` (or ``.git/info/exclude``, or the global
     excludes file) ignores them, which is what a reader of the repo would see.
+
+    None (no filtering) outside a work tree, without git, and when ``rootdir`` is itself
+    ignored by the enclosing repo (a package in an in-repo ``.venv``, a vendored tree):
+    the enclosing repo's rules then say nothing about what is inside it, and applying
+    them would drop every file.
 
     >>> git_tracked_files('/') is None or isinstance(git_tracked_files('/'), frozenset)
     True
     """
     import subprocess
 
+    def git(*args):
+        return subprocess.run(
+            ["git", "-C", rootdir, *args], capture_output=True, timeout=60
+        )
+
     try:
+        if git("check-ignore", "-q", ".").returncode == 0:
+            return None  # rootdir itself is ignored: the repo's rules do not apply
         done = subprocess.run(
             [
                 "git",
