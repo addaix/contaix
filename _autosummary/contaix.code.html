@@ -295,7 +295,7 @@
 <td><p>One aggregate section: <code class="docutils literal notranslate"><span class="pre">##</span> <span class="pre">key</span></code> then the content in a fence of its language.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#contaix.code.git_tracked_files" title="contaix.code.git_tracked_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">git_tracked_files</span></code></a>(rootdir)</p></td>
-<td><p>The files under <code class="docutils literal notranslate"><span class="pre">rootdir</span></code> git would track, relative to it; None outside a work tree.</p></td>
+<td><p>The files under <code class="docutils literal notranslate"><span class="pre">rootdir</span></code> git would track, relative to it; None for no filtering.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#contaix.code.is_binary_file" title="contaix.code.is_binary_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_binary_file</span></code></a>(path)</p></td>
 <td><p>True when the first bytes of <code class="docutils literal notranslate"><span class="pre">path</span></code> hold a NUL (git's own heuristic).</p></td>
@@ -531,9 +531,13 @@ that holds its own code blocks does not close the section early.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="contaix.code.git_tracked_files">
 <span class="sig-prename descclassname"><span class="pre">contaix.code.</span></span><span class="sig-name descname"><span class="pre">git_tracked_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rootdir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/contaix/code.html#git_tracked_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#contaix.code.git_tracked_files" title="Link to this definition">¶</a></dt>
-<dd><p>The files under <code class="docutils literal notranslate"><span class="pre">rootdir</span></code> git would track, relative to it; None outside a work tree.</p>
+<dd><p>The files under <code class="docutils literal notranslate"><span class="pre">rootdir</span></code> git would track, relative to it; None for no filtering.</p>
 <p>Untracked files count unless <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> (or <code class="docutils literal notranslate"><span class="pre">.git/info/exclude</span></code>, or the global
 excludes file) ignores them, which is what a reader of the repo would see.</p>
+<p>None (no filtering) outside a work tree, without git, and when <code class="docutils literal notranslate"><span class="pre">rootdir</span></code> is itself
+ignored by the enclosing repo (a package in an in-repo <code class="docutils literal notranslate"><span class="pre">.venv</span></code>, a vendored tree):
+the enclosing repo’s rules then say nothing about what is inside it, and applying
+them would drop every file.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">git_tracked_files</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">git_tracked_files</span><span class="p">(</span><span class="s1">'/'</span><span class="p">),</span> <span class="nb">frozenset</span><span class="p">)</span>
 <span class="go">True</span>
 </pre></div>

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "built_at": "2026-11-23T22:21:22Z",
+  "built_at": "2026-11-24T01:12:06Z",
   "package": {
     "name": "contaix",
     "version": "0.0.33",
@@ -9,24 +9,24 @@
   },
   "git": {
     "available": true,
-    "commit": "b40e51669c564ebe37a7cf41a9becefc4d42e52b",
-    "short_commit": "b40e516",
+    "commit": "bc6ec8366eeaac9161627b71f204f2c3e912acbd",
+    "short_commit": "bc6ec83",
     "branch": "main",
     "tags": [],
     "dirty": false,
     "remote_url": "https://github.com/addaix/contaix",
-    "commit_url": "https://github.com/addaix/contaix/commit/b40e51669c564ebe37a7cf41a9becefc4d42e52b",
+    "commit_url": "https://github.com/addaix/contaix/commit/bc6ec8366eeaac9161627b71f204f2c3e912acbd",
     "error": null
   },
   "ci": {
     "provider": "github",
     "repository": "addaix/contaix",
-    "sha": "b40e51669c564ebe37a7cf41a9becefc4d42e52b",
+    "sha": "bc6ec8366eeaac9161627b71f204f2c3e912acbd",
     "sha_in_history": true,
     "ref": "refs/heads/main",
     "ref_name": "main",
-    "run_id": "45278407852",
-    "run_url": "https://github.com/addaix/contaix/actions/runs/45278407852",
+    "run_id": "45302874405",
+    "run_url": "https://github.com/addaix/contaix/actions/runs/45302874405",
     "server_url": "https://github.com"
   },
   "tools": {
@@ -60,14 +60,16 @@
   },
   "pypi": {
     "checked": true,
-    "latest": "0.0.33",
-    "relation": "same",
+    "latest": "0.0.34",
+    "relation": "behind",
     "error": null
   },
-  "reproduce": "git clone https://github.com/addaix/contaix && cd contaix\ngit checkout b40e51669c564ebe37a7cf41a9becefc4d42e52b\npip install \"epythet==0.2.25\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
+  "reproduce": "git clone https://github.com/addaix/contaix && cd contaix\ngit checkout bc6ec8366eeaac9161627b71f204f2c3e912acbd\npip install \"epythet==0.2.25\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
   "warnings": [],
   "alignment": {
-    "aligned": true,
-    "notes": []
+    "aligned": false,
+    "notes": [
+      "The documented version (0.0.33) is behind the latest release on PyPI (0.0.34): `pip install contaix` gives newer code than these docs describe."
+    ]
   }
 }

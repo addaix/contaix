@@ -17,7 +17,7 @@ Tools to make AI contexts from code bases
 |--------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
 | [`fence_language`](#contaix.code.fence_language)(path)                            | The code-fence language for `path`, from its extension ('' when unknown).                                                                    |
 | [`fenced_item`](#contaix.code.fenced_item)(key, value)                         | One aggregate section: `## key` then the content in a fence of its language.                                                                 |
-| [`git_tracked_files`](#contaix.code.git_tracked_files)(rootdir)                      | The files under `rootdir` git would track, relative to it; None outside a work tree.                                                         |
+| [`git_tracked_files`](#contaix.code.git_tracked_files)(rootdir)                      | The files under `rootdir` git would track, relative to it; None for no filtering.                                                            |
 | [`is_binary_file`](#contaix.code.is_binary_file)(path)                            | True when the first bytes of `path` hold a NUL (git's own heuristic).                                                                        |
 | [`is_local_pkg_name`](#contaix.code.is_local_pkg_name)(name)                         | Returns True if and only if name is the name of a local package.                                                                             |
 | [`iter_pruned_aggregate_lines`](#contaix.code.iter_pruned_aggregate_lines)(lines, \*[, ...])   | Stream `lines` of an aggregated-code markdown, yielding only the lines that belong to sections whose header path does *not* match `exclude`. |
@@ -212,10 +212,15 @@ x = 1
 
 ### contaix.code.git_tracked_files(rootdir)
 
-The files under `rootdir` git would track, relative to it; None outside a work tree.
+The files under `rootdir` git would track, relative to it; None for no filtering.
 
 Untracked files count unless `.gitignore` (or `.git/info/exclude`, or the global
 excludes file) ignores them, which is what a reader of the repo would see.
+
+None (no filtering) outside a work tree, without git, and when `rootdir` is itself
+ignored by the enclosing repo (a package in an in-repo `.venv`, a vendored tree):
+the enclosing repo’s rules then say nothing about what is inside it, and applying
+them would drop every file.
 
 ```pycon
 >>> git_tracked_files('/') is None or isinstance(git_tracked_files('/'), frozenset)

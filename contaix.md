@@ -1,4 +1,4 @@
-> built 2026-11-23 22:21 UTC from b40e516 (main) · contaix 0.0.33. Details: build_info.json
+> built 2026-11-24 01:12 UTC from bc6ec83 (main) · contaix 0.0.33. Details: build_info.json
 
 # index.html.md
 
@@ -231,7 +231,7 @@ Tools to make AI contexts from code bases
 |--------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
 | [`fence_language`](_autosummary/contaix.code.html.md#contaix.code.fence_language)(path)                            | The code-fence language for `path`, from its extension ('' when unknown).                                                                    |
 | [`fenced_item`](_autosummary/contaix.code.html.md#contaix.code.fenced_item)(key, value)                         | One aggregate section: `## key` then the content in a fence of its language.                                                                 |
-| [`git_tracked_files`](_autosummary/contaix.code.html.md#contaix.code.git_tracked_files)(rootdir)                      | The files under `rootdir` git would track, relative to it; None outside a work tree.                                                         |
+| [`git_tracked_files`](_autosummary/contaix.code.html.md#contaix.code.git_tracked_files)(rootdir)                      | The files under `rootdir` git would track, relative to it; None for no filtering.                                                            |
 | [`is_binary_file`](_autosummary/contaix.code.html.md#contaix.code.is_binary_file)(path)                            | True when the first bytes of `path` hold a NUL (git's own heuristic).                                                                        |
 | [`is_local_pkg_name`](_autosummary/contaix.code.html.md#contaix.code.is_local_pkg_name)(name)                         | Returns True if and only if name is the name of a local package.                                                                             |
 | [`iter_pruned_aggregate_lines`](_autosummary/contaix.code.html.md#contaix.code.iter_pruned_aggregate_lines)(lines, \*[, ...])   | Stream `lines` of an aggregated-code markdown, yielding only the lines that belong to sections whose header path does *not* match `exclude`. |
@@ -426,10 +426,15 @@ x = 1
 
 ### contaix.code.git_tracked_files(rootdir)
 
-The files under `rootdir` git would track, relative to it; None outside a work tree.
+The files under `rootdir` git would track, relative to it; None for no filtering.
 
 Untracked files count unless `.gitignore` (or `.git/info/exclude`, or the global
 excludes file) ignores them, which is what a reader of the repo would see.
+
+None (no filtering) outside a work tree, without git, and when `rootdir` is itself
+ignored by the enclosing repo (a package in an in-repo `.venv`, a vendored tree):
+the enclosing repo’s rules then say nothing about what is inside it, and applying
+them would drop every file.
 
 ```pycon
 >>> git_tracked_files('/') is None or isinstance(git_tracked_files('/'), frozenset)
@@ -1395,16 +1400,18 @@ Convert a URL to a filesystem-safe cache key.
 
 # About this build
 
-This documentation was built on **2026-11-23 22:21 UTC** from commit <a href="https://github.com/addaix/contaix/commit/b40e51669c564ebe37a7cf41a9becefc4d42e52b"><code>b40e516</code></a> on branch <code>main</code>, for **contaix 0.0.33** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-24 01:12 UTC** from commit <a href="https://github.com/addaix/contaix/commit/bc6ec8366eeaac9161627b71f204f2c3e912acbd"><code>bc6ec83</code></a> on branch <code>main</code>, for **contaix 0.0.33** (from <code>pyproject.toml</code>).
 
-#### NOTE
-Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
+#### WARNING
+The documentation and the package may be misaligned:
+
+- The documented version (0.0.33) is behind the latest release on PyPI (0.0.34): `pip install contaix` gives newer code than these docs describe.
 
 ## Source
 
 |                     |                                                                                                                                                       |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/addaix/contaix/commit/b40e51669c564ebe37a7cf41a9becefc4d42e52b"><code>b40e51669c564ebe37a7cf41a9becefc4d42e52b</code></a> |
+| Commit              | <a href="https://github.com/addaix/contaix/commit/bc6ec8366eeaac9161627b71f204f2c3e912acbd"><code>bc6ec8366eeaac9161627b71f204f2c3e912acbd</code></a> |
 | Branch              | <code>main</code>                                                                                                                                     |
 | Tags at this commit | none                                                                                                                                                  |
 | Working tree        | clean                                                                                                                                                 |
@@ -1415,9 +1422,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>addaix/contaix</code>                                                                |
-| Run          | <a href="https://github.com/addaix/contaix/actions/runs/45278407852">45278407852</a>       |
+| Run          | <a href="https://github.com/addaix/contaix/actions/runs/45302874405">45302874405</a>       |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>b40e51669c564ebe37a7cf41a9becefc4d42e52b</code> (in the history of the built commit) |
+| Event commit | <code>bc6ec8366eeaac9161627b71f204f2c3e912acbd</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -1442,13 +1449,13 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/contaix/0.0.33/">0.0.33</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/contaix/0.0.34/">0.0.34</a>, newer than the documented version (0.0.33).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/addaix/contaix && cd contaix
-git checkout b40e51669c564ebe37a7cf41a9becefc4d42e52b
+git checkout bc6ec8366eeaac9161627b71f204f2c3e912acbd
 pip install "epythet==0.2.25"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
